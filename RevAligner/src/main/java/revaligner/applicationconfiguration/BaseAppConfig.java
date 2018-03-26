@@ -12,10 +12,6 @@ import org.apache.log4j.RollingFileAppender;
 public class BaseAppConfig
   implements Serializable
 {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 private final String BASE_WORKING_DIR;
   private final int TIME_OUT_INTERVAL;
   private final int TIME_OUT_CHECK_INTERVAL;

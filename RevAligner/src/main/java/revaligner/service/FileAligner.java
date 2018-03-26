@@ -91,10 +91,6 @@ import org.xmlunit.diff.Diff;
 public class FileAligner
   implements Serializable
 {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 private String sourcefile;
   private String targetfile;
   private String alignedfile;
@@ -2361,7 +2357,7 @@ public boolean verifysegments()
 
 
           indice.add(Integer.valueOf(x));
-          if (combined_key.replace(" ", " ").trim().replaceAll("(\\s)+", "").equals(finsegtext.replace(" ", " ").trim().replaceAll("(\\s)+", "")))
+          if (combined_key.replace("Â ", " ").trim().replaceAll("(\\s)+", "").equals(finsegtext.replace("Â ", " ").trim().replaceAll("(\\s)+", "")))
           {
             indices.add(indice);
             key_start_index = x + 1;
@@ -3772,12 +3768,12 @@ public void auto_update_seg(JSONArray targets, JSONArray trg_seqs, JSONArray mis
   
   public String decodehtmlstring(String encoded_s)
   {
-    return Jsoup.parse(encoded_s.replaceAll("<br[^>]*?>", "<br>").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replaceAll("\\s", "&nbsp;")).text().replace(" ", " ").replace("&#8232;", " ");
+    return Jsoup.parse(encoded_s.replaceAll("<br[^>]*?>", "<br>").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replaceAll("\\s", "&nbsp;")).text().replace("Â ", " ").replace("&#8232;", "â€¨");
   }
   
   private String encodeHtml(String s)
   {
-    return s.replace(" ", "&#8232;");
+    return s.replace("â€¨", "&#8232;");
   }
   
   @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -4064,7 +4060,7 @@ public List<String> segmentStringWithRevs2(String srctext, Segmenter segmenter)
   private static String[] trimText(String text, boolean preservenbsp)
   {
     if (!preservenbsp) {
-      text = text.replace(" ", " ");
+      text = text.replace("Â ", " ");
     }
     String[] t = new String[3];
     String patternLEFT = "^[\\s\\t]+";
@@ -4160,7 +4156,7 @@ public List<String> segmentStringWithRevs2(String srctext, Segmenter segmenter)
       org.jsoup.nodes.Element cmt = row.select("th.cmt").first();
       
 
-      String orgtrgtext = trg.text().replace("↵ ", "↵<br>").replace(" ", " ");
+      String orgtrgtext = trg.text().replace("â†µ ", "â†µ<br>").replace("Â ", " ");
       
       String newtrgtext = "";
       if (!row.attr("id").isEmpty())
@@ -4219,7 +4215,7 @@ public List<String> segmentStringWithRevs2(String srctext, Segmenter segmenter)
     {
       org.dom4j.Element unit = (org.dom4j.Element)list_trans.get(i);
       org.dom4j.Element trg = unit.element("target");
-      String trgtext = getTxlfElementText_noescape(trg).replace("<br> ", "↵<br>");
+      String trgtext = getTxlfElementText_noescape(trg).replace("<br> ", "â†µ<br>");
       trgs.add(trgtext);
     }
     return trgs;
@@ -5527,7 +5523,7 @@ public ArrayList<String[]> populateSourceTxlf()
 
 
                 indice.add(Integer.valueOf(x));
-                if (combined_key.replace(" ", " ").trim().replaceAll("(\\s)+", "").equals(finsegtext.replace(" ", " ").trim().replaceAll("(\\s)+", "")))
+                if (combined_key.replace("Â ", " ").trim().replaceAll("(\\s)+", "").equals(finsegtext.replace("Â ", " ").trim().replaceAll("(\\s)+", "")))
                 {
                   indices.add(indice);
                   key_start_index = x + 1;
@@ -5756,8 +5752,8 @@ public ArrayList<String[]> populateSourceTxlf()
                 {
                   s[1] = "";
                   temp_trg_content = new ArrayList();
-                  temp_trg_content.add(DocumentHelper.createText(" "));
-                  temp_trg = " ";
+                  temp_trg_content.add(DocumentHelper.createText("Â "));
+                  temp_trg = "Â ";
                   stats[0] = "1";
                   stats[1] = "translated";
                   stats[2] = "exact-match";
@@ -6218,7 +6214,7 @@ public ArrayList<String[]> populateSourceTxlf()
         {
           org.dom4j.Node node = (org.dom4j.Node)trg_contents.get(0);
           if ((node.getNodeType() == 3) && 
-            (node.getText().replaceFirst(" ", "").equals(""))) {
+            (node.getText().replaceFirst("Â ", "").equals(""))) {
             isnotignoredsegment = false;
           }
         }
@@ -6868,7 +6864,7 @@ private static String cumulateSegType(String oldtype, String newtype)
     String[] esm = createESMString(locale).split(",");
     for (String sesm : esm)
     {
-      String reg = "\\" + sesm + "[  ]+";
+      String reg = "\\" + sesm + "[ Â ]+";
       Pattern regex = Pattern.compile(reg);
       String rep = sesm;
       if ((!locale.isFarEast()) || (locale.isKorean())) {
@@ -6903,9 +6899,9 @@ private static String cumulateSegType(String oldtype, String newtype)
     {
       String reg = "\\" + sesm;
       if ((!locale.isFarEast()) || (locale.isKorean())) {
-        reg = reg + "  ";
+        reg = reg + " Â ";
       } else {
-        reg = reg + " ";
+        reg = reg + "Â ";
       }
       Pattern regex = Pattern.compile(reg);
       String rep = sesm;
@@ -6920,7 +6916,7 @@ private static String cumulateSegType(String oldtype, String newtype)
     for (int i = 0; i < doc.getChildNodes(8, true).getCount(); i++)
     {
       Paragraph para = (Paragraph)doc.getChildNodes(8, true).get(i);
-      if ((para.getText().contains(" ")) && (para.getText().replace(" ", "").replace(" ", "").equals(ControlChar.PARAGRAPH_BREAK)))
+      if ((para.getText().contains("Â ")) && (para.getText().replace("Â ", "").replace(" ", "").equals(ControlChar.PARAGRAPH_BREAK)))
       {
         para.remove();
         i--;
@@ -6947,37 +6943,37 @@ private static String cumulateSegType(String oldtype, String newtype)
       for (int max = this.esps.length; i < max; i++) {
         if (this.esps[i] == ':')
         {
-          ESM = ESM + ",：";
+          ESM = ESM + ",ï¼š";
           this.esps = ArrayUtils.add(this.esps, ':');
         }
         else if (this.esps[i] == '.')
         {
-          ESM = ESM + ",．";
-          ESM = ESM + ",。";
-          ESM = ESM + ",｡";
+          ESM = ESM + ",ï¼Ž";
+          ESM = ESM + ",ã€‚";
+          ESM = ESM + ",ï½¡";
         }
         else if (this.esps[i] == '!')
         {
-          ESM = ESM + ",！";
+          ESM = ESM + ",ï¼�";
         }
         else if (this.esps[i] == '?')
         {
-          ESM = ESM + ",？";
+          ESM = ESM + ",ï¼Ÿ";
         }
       }
     }
     else if (locale.isHindi())
     {
-      ESM = ESM + ",।";
+      ESM = ESM + ",à¥¤";
     }
     if (locale.isArabic())
     {
       int i = 0;
       for (int max = this.esps.length; i < max; i++) {
         if (this.esps[i] == '.') {
-          ESM = ESM + ",۔";
+          ESM = ESM + ",Û”";
         } else if (this.esps[i] == '?') {
-          ESM = ESM + ",؟";
+          ESM = ESM + ",ØŸ";
         }
       }
     }

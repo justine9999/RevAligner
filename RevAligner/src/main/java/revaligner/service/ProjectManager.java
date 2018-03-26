@@ -29,7 +29,6 @@ import revaligner.domain.RevProject;
 public class ProjectManager
   implements Serializable
 {
-  private static final long serialVersionUID = 1L;
   private long session_last_access_time = 0L;
   private String aligntype = "";
   private FileAligner fileAligner = new FileAligner();

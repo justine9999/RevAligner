@@ -7,10 +7,6 @@ import java.util.Map;
 public class DamerauLevenshteinAlgorithm
   implements Serializable
 {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 private final int deleteCost;
   private final int insertCost;
   private final int replaceCost;

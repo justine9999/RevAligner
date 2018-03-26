@@ -8,7 +8,6 @@ import revaligner.applicationconfiguration.BaseAppConfig;
 public class RevProject
   implements Serializable
 {
-  private static final long serialVersionUID = 1L;
   private BaseAppConfig baseAppConfig = new BaseAppConfig();
   private String prjNumber;
   private String prjSubName;
