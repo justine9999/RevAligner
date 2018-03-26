@@ -1,0 +1,32 @@
+﻿<ExchangedProject>
+  <__customExchangableItemMap/>
+  <ExchangedBlProject>
+    <__customExchangableItemMap/>
+    <__externalItemContainer class="ExternalItemContainer">
+      <itemMap/>
+    </__externalItemContainer>
+    <targetLanguage localeCode="xx-XX"/>
+    <__xliff>
+      <__xliffFileList>
+        <org.gs4tr.foundation3.exchangeproject.items.XliffFileDescription>
+          <__xliffFile archivePath="xx-XX/txlf/x.txlf"/>
+          <__sourceFileId>0</__sourceFileId>
+        </org.gs4tr.foundation3.exchangeproject.items.XliffFileDescription>
+      </__xliffFileList>
+    </__xliff>
+  </ExchangedBlProject>
+  <externalItems>
+    <itemMap/>
+  </externalItems>
+  <projectName>XX</projectName>
+  <__sourceFiles>
+    <__fileList>
+      <org.gs4tr.foundation3.exchangeproject.items.SourceFileDescription>
+        <__storable archivePath="source/x.docx"/>
+        <__sourceFileId>0</__sourceFileId>
+      </org.gs4tr.foundation3.exchangeproject.items.SourceFileDescription>
+    </__fileList>
+  </__sourceFiles>
+  <__creationLibraryVersion>5.0.2</__creationLibraryVersion>
+  <sourceLanguage localeCode="xx-XX"/>
+</ExchangedProject>

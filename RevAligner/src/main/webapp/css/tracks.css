@@ -1,0 +1,21 @@
+@charset "UTF-8";
+/*
+ * jQuery File Upload Plugin CSS Example
+ * https://github.com/blueimp/jQuery-File-Upload
+ *
+ * Copyright 2013, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+
+ins {
+  color: #1E90FF;
+  text-decoration: underline;
+}
+
+del {
+  color: #990000;
+  text-decoration: line-through;
+}
