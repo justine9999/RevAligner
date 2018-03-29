@@ -68,7 +68,7 @@ public class FileController
   SessionCollector sessionCollector;
   ProjectManager projectManager = new ProjectManager();
   private boolean ispropertyfilebeingused = false;
-  public static final String UTF8_BOM = "﻿";
+  public static final String UTF8_BOM = "\uFEFF﻿";
   public boolean isredirect = false;
   public boolean isaligning = false;
   public static Logger logger;
