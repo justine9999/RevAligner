@@ -102,15 +102,12 @@ private String sourcefile;
   private String sourcetxlf_nonSeg;
   private String sourcetxlf_seg;
   private String reformattedsourcetxlf_nonSeg;
-  @SuppressWarnings("unused")
 private String reformattedsourcetxlf_seg;
   private String populatedsourcetxlf;
   private String reformattedtargettxlf_nonSeg;
   private String reformattedtargettxlf_seg;
   private String reformattedtargetmapfile;
-  @SuppressWarnings("unused")
 private String targettxlf_nonSeg;
-  @SuppressWarnings("unused")
 private String targettxlf_seg;
   private String translatedtxlf;
   private String aligneddoc;
@@ -125,7 +122,6 @@ private String targettxlf_seg;
   private String prjinfofile;
   private String tempfolder;
   private String nbalignerfolder;
-  @SuppressWarnings("unused")
 private boolean isSectionBreakDeletedORInserted = false;
   private boolean stopexcution = false;
   private LinkedHashMap<String, List<String>> src_paras;
