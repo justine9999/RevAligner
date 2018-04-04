@@ -3,6 +3,9 @@ package revaligner.test;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
@@ -17,6 +20,12 @@ public class RevAlignerTest
   
   public static void main(String[] args)
   {
+	int num1 = 1;
+	int num2 = 2;
+	Integer[] ints = new Integer[]{num1, num2};
+	List<Integer> list = Arrays.asList(ints);
+	System.out.println(list);
+	if(true) return;
 	applyAsposeLicense();
     try
     {

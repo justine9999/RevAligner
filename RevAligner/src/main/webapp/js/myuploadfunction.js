@@ -1261,8 +1261,8 @@ $(function () {
 		            			}else{
 		            				$('.useautosave').css('pointer-events', 'auto');
 									$('.useautosave').css('opacity', '1.0');
-									$('.useautosave').removeClass('el-check-empty')
-									$('.useautosave').addClass('el-check')
+									$('.useautosave').removeClass('el-check-empty');
+									$('.useautosave').addClass('el-check');
 		            			}
 		            		}
 		            		
@@ -1774,7 +1774,7 @@ $(function () {
 							    },
 							    autoStyleContainer: false
 							  },
-							  step: (state, bar) => {
+							  step: function(state, bar) {
 							  	bar.path.setAttribute('stroke', state.color);
 							    bar.setText(Math.round(bar.value() * 100) + ' %');
 							  }
@@ -1864,7 +1864,7 @@ $(function () {
 				  	},
 				  	autoStyleContainer: false
 				},
-				step: (state, bar) => {
+				step: function(state, bar) {
 					bar.path.setAttribute('stroke', state.color);
 				  	bar.setText(Math.round(bar.value() * 100) + ' %');
 				}
@@ -2006,7 +2006,7 @@ $(function () {
 							  },
 							  autoStyleContainer: false
 							},
-							step: (state, bar) => {
+							step: function(state, bar) {
 								bar.path.setAttribute('stroke', state.color);
 								bar.setText(Math.round(bar.value() * 100) + ' %');
 							}
