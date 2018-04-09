@@ -87,11 +87,10 @@ import org.w3c.dom.NodeList;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
 
-
 public class FileAligner
   implements Serializable
 {
-private String sourcefile;
+  private String sourcefile;
   private String targetfile;
   private String alignedfile;
   private String auto_saved_alignedfile;
@@ -102,13 +101,13 @@ private String sourcefile;
   private String sourcetxlf_nonSeg;
   private String sourcetxlf_seg;
   private String reformattedsourcetxlf_nonSeg;
-private String reformattedsourcetxlf_seg;
+  private String reformattedsourcetxlf_seg;
   private String populatedsourcetxlf;
   private String reformattedtargettxlf_nonSeg;
   private String reformattedtargettxlf_seg;
   private String reformattedtargetmapfile;
-private String targettxlf_nonSeg;
-private String targettxlf_seg;
+  private String targettxlf_nonSeg;
+  private String targettxlf_seg;
   private String translatedtxlf;
   private String aligneddoc;
   private String htmlreportfortranslation;
@@ -122,7 +121,7 @@ private String targettxlf_seg;
   private String prjinfofile;
   private String tempfolder;
   private String nbalignerfolder;
-private boolean isSectionBreakDeletedORInserted = false;
+  private boolean isSectionBreakDeletedORInserted = false;
   private boolean stopexcution = false;
   private LinkedHashMap<String, List<String>> src_paras;
   private LinkedHashMap<String, List<String>> trg_paras;
@@ -133,8 +132,8 @@ private boolean isSectionBreakDeletedORInserted = false;
   private LinkedHashMap<String, String> aligned_para_seqs;
   private int nullcnt = 0;
   private String estimateNBAlignerCompTime = "";
-  private static HashMap<String, Integer> alignProgress = new HashMap<String, Integer>();
-  private LinkedHashMap<Integer, List<Integer>> txlftrgsegmap;
+  private static HashMap<String, Integer> alignProgress = new HashMap();
+  private LinkedHashMap<Integer, List> txlftrgsegmap;
   private LinkedHashMap<Integer, boolean[]> txlftrgsewsmap;
   private LinkedHashMap<String, List<String>> missing_trg_segs;
   private LinkedHashMap<String, String> locked_seg_seqs;
@@ -190,9 +189,9 @@ private boolean isSectionBreakDeletedORInserted = false;
     }
   }
   
-  public void setAlignProgress(String prjid, int curalignProgress)
+  public void setAlignProgress(String prjid, int alignProgress)
   {
-    alignProgress.put(prjid, Integer.valueOf(curalignProgress));
+    this.alignProgress.put(prjid, Integer.valueOf(alignProgress));
   }
   
   public void setnullcnt(int cnt)
@@ -407,8 +406,7 @@ private boolean isSectionBreakDeletedORInserted = false;
     return this.errorreason;
   }
   
-  @SuppressWarnings("deprecation")
-public void createReformattedDocument(String aligntype)
+  public void createReformattedDocument(String aligntype)
     throws Exception
   {
     this.errorreason = "Unknown error";
@@ -602,8 +600,7 @@ public void createReformattedDocument(String aligntype)
     }
   }
   
-  @SuppressWarnings({ "deprecation", "rawtypes", "unused" })
-private void convertMoveToIDTracks(com.aspose.words.Document doc)
+  private void convertMoveToIDTracks(com.aspose.words.Document doc)
     throws Exception
   {
     com.aspose.words.Document temp = new com.aspose.words.Document();
@@ -642,7 +639,7 @@ private void convertMoveToIDTracks(com.aspose.words.Document doc)
         }
         else if ((curNode != null) && (curNode.getNodeType() == 8))
         {
-          //Paragraph para = (Paragraph)curNode;
+          Paragraph para = (Paragraph)curNode;
           if ((curNode.getPreviousSibling() != null) && (curNode.getPreviousSibling().getNodeType() == 8))
           {
             Paragraph prev_para = (Paragraph)curNode.getPreviousSibling();
@@ -684,14 +681,12 @@ private void convertMoveToIDTracks(com.aspose.words.Document doc)
     }
   }
   
-  @SuppressWarnings("deprecation")
-private void createFakeTrackChanges(com.aspose.words.Document doc)
+  private void createFakeTrackChanges(com.aspose.words.Document doc)
     throws Exception
   {
     boolean ismovefrom = false;
-    @SuppressWarnings("unused")
-	boolean ismoveto = false;
-    HashSet<Footnote> set = new HashSet<Footnote>();
+    boolean ismoveto = false;
+    HashSet<Footnote> set = new HashSet();
     for (int i = 0; i < doc.getChildNodes(0, true).getCount(); i++)
     {
       com.aspose.words.Node node = doc.getChildNodes(0, true).get(i);
@@ -881,8 +876,7 @@ private void createFakeTrackChanges(com.aspose.words.Document doc)
     }
   }
   
-  @SuppressWarnings("deprecation")
-private void mergeRevision(com.aspose.words.Document doc)
+  private void mergeRevision(com.aspose.words.Document doc)
     throws Exception
   {
     Paragraph prev = null;
@@ -926,8 +920,7 @@ private void mergeRevision(com.aspose.words.Document doc)
     }
   }
   
-  @SuppressWarnings("deprecation")
-private void mergeParagraphsInDocuemnt(com.aspose.words.Document doc)
+  private void mergeParagraphsInDocuemnt(com.aspose.words.Document doc)
     throws Exception
   {
     ExtractionSupportImpl extractionSupportImpl = new ExtractionSupportImpl(Locale.makeLocale(this.sourcelanguage), Locale.makeLocale(this.targetlanguage));
@@ -943,7 +936,7 @@ private void mergeParagraphsInDocuemnt(com.aspose.words.Document doc)
     boolean ismoveaway = false;
     boolean ismoveto = false;
     int toskip = 0;
-    List<Paragraph> toremove = new ArrayList<Paragraph>();
+    List<Paragraph> toremove = new ArrayList();
     for (int i = 0; i < doc.getChildNodes(0, true).getCount(); i++)
     {
       com.aspose.words.Node node = doc.getChildNodes(0, true).get(i);
@@ -1131,8 +1124,7 @@ private void mergeParagraphsInDocuemnt(com.aspose.words.Document doc)
     doc.save("C:\\Program Files (x86)\\pa\\paprjs\\testprj23\\test.docx");
   }
   
-  @SuppressWarnings("deprecation")
-private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
+  private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
   {
     Row sampler = new Row(doc);
     for (int i = 0; i < tb.getChildNodes(6, true).getCount(); i++) {
@@ -1172,7 +1164,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
     
     String[] res = new String[1];
     
-    this.txlftrgsegmap = new LinkedHashMap<Integer, List<Integer>>();
+    this.txlftrgsegmap = new LinkedHashMap();
     this.alignedfile = (this.prjfolder + File.separator + "rev_aligned.xml");
     this.reformattedtargetmapfile = (this.prjfolder + File.separator + "target_reformatted" + File.separator + ".mp");
     StringBuffer sbmp = new StringBuffer();
@@ -1181,8 +1173,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
     }
     SegmenterFactory factory = new SegmenterFactory();
     Configuration segconfig = createConfigForSegmenter(false, this.sourcelanguage);
-    @SuppressWarnings("unused")
-	Segmenter segmenter = factory.getSegmenter("trados", Locale.makeLocale(this.sourcelanguage), segconfig);
+    Segmenter segmenter = factory.getSegmenter("trados", Locale.makeLocale(this.sourcelanguage), segconfig);
     
     org.dom4j.Document document = DocumentHelper.createDocument();
     org.dom4j.Element root = document.addElement("alinger");
@@ -1191,14 +1182,12 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
     head.addAttribute("trg_lang", this.targetlanguage);
     head.addAttribute("creator", this.creatorid);
     org.dom4j.Element aligned = root.addElement("aligned");
-    @SuppressWarnings("unused")
-	org.dom4j.Element orphans = root.addElement("orphans");
+    org.dom4j.Element orphans = root.addElement("orphans");
     
 
     org.dom4j.Document document_source_formatted_nonSeg = XmlParser.parseXmlFile(this.reformattedsourcetxlf_nonSeg);
     org.dom4j.Element root_source_formatted_nonSeg = document_source_formatted_nonSeg.getRootElement();
-    @SuppressWarnings("rawtypes")
-	List list_source_formatted_nonSeg = root_source_formatted_nonSeg.selectNodes("//*[name() = 'trans-unit']");
+    List list_source_formatted_nonSeg = root_source_formatted_nonSeg.selectNodes("//*[name() = 'trans-unit']");
     
 
 
@@ -1207,14 +1196,12 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
     org.dom4j.Document document_target_nonSeg = XmlParser.parseXmlFile(this.reformattedtargettxlf_nonSeg);
     org.dom4j.Element root_target_nonSeg = document_target_nonSeg.getRootElement();
     
-    @SuppressWarnings("rawtypes")
-	List list_target_nonSeg = root_target_nonSeg.selectNodes("//*[name() = 'trans-unit']");
+    List list_target_nonSeg = root_target_nonSeg.selectNodes("//*[name() = 'trans-unit']");
     
     org.dom4j.Document document_target_seg = XmlParser.parseXmlFile(this.reformattedtargettxlf_seg);
     org.dom4j.Element root_target_seg = document_target_seg.getRootElement();
     
-    @SuppressWarnings("rawtypes")
-	List list_target_seg = root_target_seg.selectNodes("//*[name() = 'group'][@restype = 'x-paragraph']");
+    List list_target_seg = root_target_seg.selectNodes("//*[name() = 'group'][@restype = 'x-paragraph']");
     int trg_para_count = 0;
     
     ExtractionSupportImpl extractionSupportImpl = new ExtractionSupportImpl(Locale.makeLocale(this.sourcelanguage), Locale.makeLocale(this.targetlanguage));
@@ -1228,10 +1215,8 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
     int cnt = 0;
     
 
-    @SuppressWarnings("unused")
-	boolean issrcfirsthf = true;
-    @SuppressWarnings("unused")
-	boolean istrgfirsthf = true;
+    boolean issrcfirsthf = true;
+    boolean istrgfirsthf = true;
     int gcount = -1;
     for (int i = 0; i < list_source_formatted_nonSeg.size(); i++)
     {
@@ -1254,8 +1239,8 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
         String[] split_merged_text = merged_text.replaceAll("(&amp;paradel;)+", "&amp;paradel;").replaceAll("^&amp;paradel;", "").replaceAll("&amp;paradel;$", "").split("&amp;paradel;");
         List<String> segmentsGroup = segmentStringWithRevs(merged_text.replaceAll("(&amp;paradel;)+", "&amp;paradel;").replace("&amp;parains;", ""), this.sourcelanguage);
         
-        List<List<String>> resegmentedGroup = new ArrayList<List<String>>();
-        resegmentedGroup.add(new ArrayList<String>());
+        List<List<String>> resegmentedGroup = new ArrayList();
+        resegmentedGroup.add(new ArrayList());
         int idx = 0;
         String orgs;
         String[] newsegs;
@@ -1269,23 +1254,23 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
             {
               String sss = newsegs[ss];
               if (!sss.trim().equals("")) {
-                ((List<String>)resegmentedGroup.get(idx)).add(fixMissingTags(sss));
+                ((List)resegmentedGroup.get(idx)).add(fixMissingTags(sss));
               }
-              if ((((List<String>)resegmentedGroup.get(idx)).size() != 0) && (ss != newsegs.length - 1))
+              if ((((List)resegmentedGroup.get(idx)).size() != 0) && (ss != newsegs.length - 1))
               {
-                resegmentedGroup.add(new ArrayList<String>());
+                resegmentedGroup.add(new ArrayList());
                 idx++;
               }
             }
             if (orgs.trim().endsWith("&amp;paradel;"))
             {
-              resegmentedGroup.add(new ArrayList<String>());
+              resegmentedGroup.add(new ArrayList());
               idx++;
             }
           }
           else
           {
-            ((List<String>)resegmentedGroup.get(idx)).add(fixMissingTags(orgs));
+            ((List)resegmentedGroup.get(idx)).add(fixMissingTags(orgs));
           }
         }
         if (split_merged_text.length > resegmentedGroup.size())
@@ -1339,7 +1324,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
             
 
             org.dom4j.Element src_segs = src.addElement("segments");
-            List<String> segments = (List<String>)resegmentedGroup.get(j);
+            List<String> segments = (List)resegmentedGroup.get(j);
             for (int z = 0; z < segments.size(); z++)
             {
               String segment_text = trimText((String)segments.get(z), false)[0];
@@ -1385,8 +1370,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
 
               org.dom4j.Element trg_segs = trg.addElement("segments");
               List<String> trgsegs = segmentStringWithRevs(trg_formatted_text, this.targetlanguage);
-              @SuppressWarnings("unchecked")
-			List<org.dom4j.Element> srcsegs = src_segs.elements("src_seg");
+              List<org.dom4j.Element> srcsegs = src_segs.elements("src_seg");
               int trg_tmp_cnt = 0;
               for (int z = 0; trg_tmp_cnt < trgsegs.size(); z++)
               {
@@ -1406,8 +1390,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
                   
 
                   String mapid = Integer.toString(gcount) + " - " + Integer.toString(j) + " - " + Integer.toString(z);
-                  @SuppressWarnings({ "unused", "rawtypes" })
-				List t = ((org.dom4j.Element)trg_txlf_seg.elements("trans-unit").get(trg_tmp_cnt)).content();
+                  List t = ((org.dom4j.Element)trg_txlf_seg.elements("trans-unit").get(trg_tmp_cnt)).content();
                   
                   sbmp.append(mapid + "\t" + trg_para_count + "\t" + trg_tmp_cnt + "\n");
                   
@@ -1477,8 +1460,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
           
 
           String mapid = Integer.toString(unitcnt) + " - 0 - " + Integer.toString(z);
-          @SuppressWarnings({ "rawtypes", "unused" })
-		List t = ((org.dom4j.Element)trg_txlf_seg.elements("trans-unit").get(z)).content();
+          List t = ((org.dom4j.Element)trg_txlf_seg.elements("trans-unit").get(z)).content();
           
           sbmp.append(mapid + "\t" + trg_para_count + "\t" + z + "\n");
         }
@@ -1506,7 +1488,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
     
     this.alignedfile = (this.prjfolder + File.separator + "rev_aligned.xml");
     this.reformattedtargetmapfile = (this.prjfolder + File.separator + "target_reformatted" + File.separator + ".mp");
-    HashMap<String, String> srcidmap = new HashMap<String, String>();
+    HashMap<String, String> srcidmap = new HashMap();
     
     this.nbalignerfolder = (this.prjfolder + File.separator + "nbaligner");
     if (!new File(this.nbalignerfolder).exists()) {
@@ -1536,8 +1518,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
     }
     SegmenterFactory factory = new SegmenterFactory();
     Configuration segconfig = createConfigForSegmenter(false, this.sourcelanguage);
-    @SuppressWarnings("unused")
-	Segmenter segmenter = factory.getSegmenter("trados", Locale.makeLocale(this.sourcelanguage), segconfig);
+    Segmenter segmenter = factory.getSegmenter("trados", Locale.makeLocale(this.sourcelanguage), segconfig);
     
     org.dom4j.Document document = DocumentHelper.createDocument();
     org.dom4j.Element root = document.addElement("alinger");
@@ -1551,8 +1532,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
 
     org.dom4j.Document document_source_formatted_nonSeg = XmlParser.parseXmlFile(this.reformattedsourcetxlf_nonSeg);
     org.dom4j.Element root_source_formatted_nonSeg = document_source_formatted_nonSeg.getRootElement();
-    @SuppressWarnings("rawtypes")
-	List list_source_formatted_nonSeg = root_source_formatted_nonSeg.selectNodes("//*[name() = 'trans-unit']");
+    List list_source_formatted_nonSeg = root_source_formatted_nonSeg.selectNodes("//*[name() = 'trans-unit']");
     
 
 
@@ -1561,14 +1541,12 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
     org.dom4j.Document document_target_nonSeg = XmlParser.parseXmlFile(this.reformattedtargettxlf_nonSeg);
     org.dom4j.Element root_target_nonSeg = document_target_nonSeg.getRootElement();
     
-    @SuppressWarnings("rawtypes")
-	List list_target_nonSeg = root_target_nonSeg.selectNodes("//*[name() = 'trans-unit']");
+    List list_target_nonSeg = root_target_nonSeg.selectNodes("//*[name() = 'trans-unit']");
     
     org.dom4j.Document document_target_seg = XmlParser.parseXmlFile(this.reformattedtargettxlf_seg);
     org.dom4j.Element root_target_seg = document_target_seg.getRootElement();
     
-    @SuppressWarnings({ "rawtypes", "unused" })
-	List list_target_seg = root_target_seg.selectNodes("//*[name() = 'group'][@restype = 'x-paragraph']");
+    List list_target_seg = root_target_seg.selectNodes("//*[name() = 'group'][@restype = 'x-paragraph']");
     
     ExtractionSupportImpl extractionSupportImpl_src = new ExtractionSupportImpl(Locale.makeLocale(this.sourcelanguage), Locale.makeLocale(this.sourcelanguage));
     Configuration config_src = new BaseConfiguration();
@@ -1580,10 +1558,8 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
     config_trg.setProperty("extraction.tokens.extract", "all");
     extractionSupportImpl_trg.setConfiguration(config_trg);
     
-    @SuppressWarnings("unused")
-	boolean issrcfirsthf = true;
-    @SuppressWarnings("unused")
-	boolean istrgfirsthf = true;
+    boolean issrcfirsthf = true;
+    boolean istrgfirsthf = true;
     int gcount = -1;
     int segmentId = 0;
     for (int i = 0; i < list_source_formatted_nonSeg.size(); i++)
@@ -1605,8 +1581,8 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
         
         String[] split_merged_text = merged_text.replaceAll("(&amp;paradel;)+", "&amp;paradel;").replaceAll("^&amp;paradel;", "").replaceAll("&amp;paradel;$", "").split("&amp;paradel;");
         List<String> segmentsGroup = segmentStringWithRevs(merged_text.replaceAll("(&amp;paradel;)+", "&amp;paradel;").replace("&amp;parains;", ""), this.sourcelanguage);
-        List<List<String>> resegmentedGroup = new ArrayList<List<String>>();
-        resegmentedGroup.add(new ArrayList<String>());
+        List<List<String>> resegmentedGroup = new ArrayList();
+        resegmentedGroup.add(new ArrayList());
         int idx = 0;
         String orgs;
         String[] newsegs;
@@ -1620,23 +1596,23 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
             {
               String sss = newsegs[ss];
               if (!sss.trim().equals("")) {
-                ((List<String>)resegmentedGroup.get(idx)).add(fixMissingTags(sss));
+                ((List)resegmentedGroup.get(idx)).add(fixMissingTags(sss));
               }
-              if ((((List<String>)resegmentedGroup.get(idx)).size() != 0) && (ss != newsegs.length - 1))
+              if ((((List)resegmentedGroup.get(idx)).size() != 0) && (ss != newsegs.length - 1))
               {
-                resegmentedGroup.add(new ArrayList<String>());
+                resegmentedGroup.add(new ArrayList());
                 idx++;
               }
             }
             if (orgs.trim().endsWith("&amp;paradel;"))
             {
-              resegmentedGroup.add(new ArrayList<String>());
+              resegmentedGroup.add(new ArrayList());
               idx++;
             }
           }
           else
           {
-            ((List<String>)resegmentedGroup.get(idx)).add(fixMissingTags(orgs));
+            ((List)resegmentedGroup.get(idx)).add(fixMissingTags(orgs));
           }
         }
         if (split_merged_text.length > resegmentedGroup.size())
@@ -1684,7 +1660,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
             
 
             org.dom4j.Element src_segs = src.addElement("segments");
-            List<String> segments = (List<String>)resegmentedGroup.get(j);
+            List<String> segments = (List)resegmentedGroup.get(j);
             for (int z = 0; z < segments.size(); z++)
             {
               String segment_text = trimText((String)segments.get(z), false)[0];
@@ -1746,9 +1722,26 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
     writer = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(nbtargetfolder + File.separator + this.targetlanguage + ".txml")), "UTF8");
     nbtarget.write(writer);
     writer.close();
+    
 
     String pahtexe = "\\\\10.2.50.190\\AutoAlignerCLI\\AutoAlignerCLI.exe";
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     ProcessBuilder pb = new ProcessBuilder(new String[] { pahtexe, "-i", this.nbalignerfolder, "-o", this.nbalignerfolder, "-lang_pairs", this.sourcelanguage + "_" + this.targetlanguage, "-lang_detect", "normal", "-identicals", "-match_filenames", "-txml_or_xmx_output", "-docnames_output", "-disallow_src_merging" });
     pb.redirectErrorStream(true);
     
@@ -1790,6 +1783,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
     }
     p.waitFor();
     
+
     for (File file : new File(this.nbalignerfolder).listFiles())
     {
       if (file.getName().endsWith(".zip")) {
@@ -1806,8 +1800,8 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
     if (alignedtxml.equals("")) {
       throw new Exception("file didn't aligned by nbaligner");
     }
-    HashMap<String, String[]> alignedtrgs = new HashMap<String, String[]>();
-    List<String[]> missingtrgs = new ArrayList<String[]>();
+    HashMap<String, String[]> alignedtrgs = new HashMap();
+    List<String[]> missingtrgs = new ArrayList();
     int src_idx = -1;
     
     org.dom4j.Document alignedtxmldoc = XmlParser.parseXmlFile(alignedtxml);
@@ -1845,8 +1839,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
         }
         else if ((target != null) && (!target.getTextTrim().equals("")))
         {
-          @SuppressWarnings("unused")
-		String matchscore = target.attributeValue("score");
+          String matchscore = target.attributeValue("score");
           int trg_idx = Integer.parseInt(target.attributeValue("sent_no"));
           
           missingtrgs.add(new String[] { target.getTextTrim(), Integer.toString(trg_idx) });
@@ -1854,13 +1847,11 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
       }
     }
     int null_idx = 0;
-    @SuppressWarnings("unchecked")
-	List<org.dom4j.Element> groups = aligned.elements("group");
+    List<org.dom4j.Element> groups = aligned.elements("group");
     for (int i = 0; i < groups.size(); i++)
     {
       org.dom4j.Element group = (org.dom4j.Element)groups.get(i);
-      @SuppressWarnings("unchecked")
-	List<org.dom4j.Element> units = group.elements("unit");
+      List<org.dom4j.Element> units = group.elements("unit");
       for (int j = 0; j < units.size(); j++)
       {
         org.dom4j.Element unit = (org.dom4j.Element)units.get(j);
@@ -1868,8 +1859,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
         org.dom4j.Element src_para_segs = src_para.element("segments");
         org.dom4j.Element trg_para = unit.addElement("trg_para");
         org.dom4j.Element trg_para_segs = trg_para.addElement("segments");
-        @SuppressWarnings("unchecked")
-		List<org.dom4j.Element> src_segs = src_para_segs.elements("src_seg");
+        List<org.dom4j.Element> src_segs = src_para_segs.elements("src_seg");
         for (int z = 0; z < src_segs.size(); z++)
         {
           org.dom4j.Element src_seg = (org.dom4j.Element)src_segs.get(z);
@@ -1955,8 +1945,7 @@ private boolean isWholeTableDeleted(Table tb, com.aspose.words.Document doc)
     return res;
   }
   
-  @SuppressWarnings("unchecked")
-public void buildTargetContentMap()
+  public void buildTargetContentMap()
     throws Exception
   {
     System.out.println("rebuilding target content map file....");
@@ -1966,12 +1955,11 @@ public void buildTargetContentMap()
     config_trg.setProperty("extraction.tokens.extract", "all");
     extractionSupportImpl_trg.setConfiguration(config_trg);
     
-    this.txlftrgsegmap = new LinkedHashMap<Integer, List<Integer>>();
-    this.txlftrgsewsmap = new LinkedHashMap<Integer, boolean[]>();
+    this.txlftrgsegmap = new LinkedHashMap();
+    this.txlftrgsewsmap = new LinkedHashMap();
     org.dom4j.Document document_target_seg = XmlParser.parseXmlFile(this.reformattedtargettxlf_seg);
     org.dom4j.Element root_target_seg = document_target_seg.getRootElement();
-    @SuppressWarnings("rawtypes")
-	List list_target_para = root_target_seg.selectNodes("//*[name() = 'group'][@restype = 'x-paragraph']");
+    List list_target_para = root_target_seg.selectNodes("//*[name() = 'group'][@restype = 'x-paragraph']");
     int segmentId = 1;
     for (int i = 0; i < list_target_para.size(); i++)
     {
@@ -1982,8 +1970,7 @@ public void buildTargetContentMap()
         String trgseg = trg_txlf_seg.element("source").getText().trim().replaceAll("(\\s)+", " ");
         if (extractionSupportImpl_trg.isExtractable(trgseg))
         {
-          @SuppressWarnings("rawtypes")
-		List tmp_content = new ArrayList();
+          List tmp_content = new ArrayList();
           for (int z = 0; z < trg_txlf_seg.content().size(); z++) {
             if ((trg_txlf_seg.content().get(z) instanceof org.dom4j.Element)) {
               tmp_content.add(trg_txlf_seg.content().get(z));
@@ -2047,7 +2034,7 @@ public void buildTargetContentMap()
   private String getTxlfElementText_withFakeTC(org.dom4j.Element src)
   {
     String text = "";
-    ArrayList<String> node_ids = new ArrayList<String>();
+    ArrayList<String> node_ids = new ArrayList();
     
     int start_idx = -1;
     int end_idx = 0;
@@ -2172,8 +2159,7 @@ public void buildTargetContentMap()
     return text;
   }
   
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-private List replacetextinDomObj(List contents)
+  private List replacetextinDomObj(List contents)
   {
     List clone = new ArrayList();
     for (int j = 0; j < contents.size(); j++) {
@@ -2186,8 +2172,7 @@ private List replacetextinDomObj(List contents)
     return clone;
   }
   
-  @SuppressWarnings("rawtypes")
-private String assembleText(List contents)
+  private String assembleText(List contents)
   {
     String text = "";
     if (contents == null) {
@@ -2261,8 +2246,7 @@ private String assembleText(List contents)
     return text;
   }
   
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-public boolean verifysegments()
+  public boolean verifysegments()
     throws Exception
   {
     System.out.println("verifying segments mapping....");
@@ -2353,7 +2337,7 @@ public boolean verifysegments()
 
 
           indice.add(Integer.valueOf(x));
-          if (combined_key.replace("Â ", " ").trim().replaceAll("(\\s)+", "").equals(finsegtext.replace("Â ", " ").trim().replaceAll("(\\s)+", "")))
+          if (combined_key.replace(" ", " ").trim().replaceAll("(\\s)+", "").equals(finsegtext.replace(" ", " ").trim().replaceAll("(\\s)+", "")))
           {
             indices.add(indice);
             key_start_index = x + 1;
@@ -2462,8 +2446,7 @@ public boolean verifysegments()
     return isValid;
   }
   
-  @SuppressWarnings("unused")
-public void align()
+  public void align()
     throws Exception
   {
     org.dom4j.Document document = DocumentHelper.createDocument();
@@ -2744,8 +2727,7 @@ public void align()
     writer.close();
   }
   
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-public void readAlignedFile()
+  public void readAlignedFile()
     throws Exception
   {
     this.src_paras = new LinkedHashMap();
@@ -2867,8 +2849,7 @@ public void readAlignedFile()
     }
   }
   
-  @SuppressWarnings("unchecked")
-public String createTM(String prjid, boolean reviewed)
+  public String createTM(String prjid, boolean reviewed)
     throws Exception
   {
     String tm_add = this.prjfolder + File.separator + (reviewed ? "reviewed_tm_" : "aligned_tm_") + prjid + "_" + this.sourcelanguage + "_" + this.targetlanguage;
@@ -2917,8 +2898,7 @@ public String createTM(String prjid, boolean reviewed)
     return tm_add;
   }
   
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-public void readAlignedFile_seg(boolean useautosaveddata)
+  public void readAlignedFile_seg(boolean useautosaveddata)
     throws Exception
   {
     this.src_segs = new LinkedHashMap();
@@ -3076,8 +3056,7 @@ public void readAlignedFile_seg(boolean useautosaveddata)
     }
   }
   
-  @SuppressWarnings("unchecked")
-public String readAlignedFileForRatio(String alignedfile)
+  public String readAlignedFileForRatio(String alignedfile)
     throws Exception
   {
     String ratio = "0";
@@ -3125,8 +3104,7 @@ public String readAlignedFileForRatio(String alignedfile)
     return ratio;
   }
   
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-public void readAlignedFile_seg_auto(boolean useautosaveddata)
+  public void readAlignedFile_seg_auto(boolean useautosaveddata)
     throws Exception
   {
     this.src_segs = new LinkedHashMap();
@@ -3251,8 +3229,7 @@ public void readAlignedFile_seg_auto(boolean useautosaveddata)
     }
   }
   
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-public void update(JSONArray arr, JSONArray missings, JSONArray locks, JSONArray segaligned, JSONArray targets, JSONArray missing_targets, int cnt)
+  public void update(JSONArray arr, JSONArray missings, JSONArray locks, JSONArray segaligned, JSONArray targets, JSONArray missing_targets, int cnt)
     throws Exception
   {
     File alignedFile = new File(this.alignedfile);
@@ -3370,8 +3347,7 @@ public void update(JSONArray arr, JSONArray missings, JSONArray locks, JSONArray
     writer.close();
   }
   
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-public void update_seg(JSONArray targets, JSONArray trg_seqs, JSONArray missing_targets, JSONArray missing_trg_seqs, JSONArray locks, int cnt, JSONArray edited, JSONArray review, JSONArray ignore)
+  public void update_seg(JSONArray targets, JSONArray trg_seqs, JSONArray missing_targets, JSONArray missing_trg_seqs, JSONArray locks, int cnt, JSONArray edited, JSONArray review, JSONArray ignore)
     throws Exception
   {
     File alignedFile = new File(this.alignedfile);
@@ -3567,8 +3543,7 @@ public void update_seg(JSONArray targets, JSONArray trg_seqs, JSONArray missing_
     }
   }
   
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-public void auto_update_seg(JSONArray targets, JSONArray trg_seqs, JSONArray missing_targets, JSONArray missing_trg_seqs, JSONArray locks, int cnt, JSONArray edited, JSONArray review, JSONArray ignore)
+  public void auto_update_seg(JSONArray targets, JSONArray trg_seqs, JSONArray missing_targets, JSONArray missing_trg_seqs, JSONArray locks, int cnt, JSONArray edited, JSONArray review, JSONArray ignore)
     throws Exception
   {
     File alignedFile = new File(this.alignedfile);
@@ -3764,16 +3739,15 @@ public void auto_update_seg(JSONArray targets, JSONArray trg_seqs, JSONArray mis
   
   public String decodehtmlstring(String encoded_s)
   {
-    return Jsoup.parse(encoded_s.replaceAll("<br[^>]*?>", "<br>").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replaceAll("\\s", "&nbsp;")).text().replace("Â ", " ").replace("&#8232;", "â€¨");
+    return Jsoup.parse(encoded_s.replaceAll("<br[^>]*?>", "<br>").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replaceAll("\\s", "&nbsp;")).text().replace(" ", " ").replace("&#8232;", " ");
   }
   
   private String encodeHtml(String s)
   {
-    return s.replace("â€¨", "&#8232;");
+    return s.replace(" ", "&#8232;");
   }
   
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-public HashMap<String, List<String>> updateSingleParagraph(String text)
+  public HashMap<String, List<String>> updateSingleParagraph(String text)
     throws Exception
   {
     HashMap<String, List<String>> semap = new HashMap();
@@ -3788,8 +3762,7 @@ public HashMap<String, List<String>> updateSingleParagraph(String text)
     return semap;
   }
   
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-public HashMap<String, List<String>> findandsegmentpara(String src_segid, String trg_segid)
+  public HashMap<String, List<String>> findandsegmentpara(String src_segid, String trg_segid)
     throws Exception
   {
     HashMap<String, List<String>> stsegs = new HashMap();
@@ -3835,8 +3808,7 @@ public HashMap<String, List<String>> findandsegmentpara(String src_segid, String
     return stsegs;
   }
   
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-public List<String> segmentStringWithRevs(String srctext, String language)
+  public List<String> segmentStringWithRevs(String srctext, String language)
     throws Exception
   {
     List<String> srcs = new ArrayList();
@@ -3944,8 +3916,7 @@ public List<String> segmentStringWithRevs(String srctext, String language)
     return srcs_split;
   }
   
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-public List<String> segmentStringWithRevs2(String srctext, Segmenter segmenter)
+  public List<String> segmentStringWithRevs2(String srctext, Segmenter segmenter)
   {
     List<String> srcs = new ArrayList();
     Map<Integer, String> tagmap = new TreeMap();
@@ -4056,7 +4027,7 @@ public List<String> segmentStringWithRevs2(String srctext, Segmenter segmenter)
   private static String[] trimText(String text, boolean preservenbsp)
   {
     if (!preservenbsp) {
-      text = text.replace("Â ", " ");
+      text = text.replace(" ", " ");
     }
     String[] t = new String[3];
     String patternLEFT = "^[\\s\\t]+";
@@ -4152,7 +4123,7 @@ public List<String> segmentStringWithRevs2(String srctext, Segmenter segmenter)
       org.jsoup.nodes.Element cmt = row.select("th.cmt").first();
       
 
-      String orgtrgtext = trg.text().replace("â†µ ", "â†µ<br>").replace("Â ", " ");
+      String orgtrgtext = trg.text().replace("↵ ", "↵<br>").replace(" ", " ");
       
       String newtrgtext = "";
       if (!row.attr("id").isEmpty())
@@ -4211,7 +4182,7 @@ public List<String> segmentStringWithRevs2(String srctext, Segmenter segmenter)
     {
       org.dom4j.Element unit = (org.dom4j.Element)list_trans.get(i);
       org.dom4j.Element trg = unit.element("target");
-      String trgtext = getTxlfElementText_noescape(trg).replace("<br> ", "â†µ<br>");
+      String trgtext = getTxlfElementText_noescape(trg).replace("<br> ", "↵<br>");
       trgs.add(trgtext);
     }
     return trgs;
@@ -5171,8 +5142,7 @@ public List<String> segmentStringWithRevs2(String srctext, Segmenter segmenter)
     return result;
   }
   
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-public ArrayList<String[]> populateSourceTxlf()
+  public ArrayList<String[]> populateSourceTxlf()
     throws Exception
   {
     System.out.println("populating source txlf with aligned segments....");
@@ -5519,7 +5489,7 @@ public ArrayList<String[]> populateSourceTxlf()
 
 
                 indice.add(Integer.valueOf(x));
-                if (combined_key.replace("Â ", " ").trim().replaceAll("(\\s)+", "").equals(finsegtext.replace("Â ", " ").trim().replaceAll("(\\s)+", "")))
+                if (combined_key.replace(" ", " ").trim().replaceAll("(\\s)+", "").equals(finsegtext.replace(" ", " ").trim().replaceAll("(\\s)+", "")))
                 {
                   indices.add(indice);
                   key_start_index = x + 1;
@@ -5748,8 +5718,8 @@ public ArrayList<String[]> populateSourceTxlf()
                 {
                   s[1] = "";
                   temp_trg_content = new ArrayList();
-                  temp_trg_content.add(DocumentHelper.createText("Â "));
-                  temp_trg = "Â ";
+                  temp_trg_content.add(DocumentHelper.createText(" "));
+                  temp_trg = " ";
                   stats[0] = "1";
                   stats[1] = "translated";
                   stats[2] = "exact-match";
@@ -6210,7 +6180,7 @@ public ArrayList<String[]> populateSourceTxlf()
         {
           org.dom4j.Node node = (org.dom4j.Node)trg_contents.get(0);
           if ((node.getNodeType() == 3) && 
-            (node.getText().replaceFirst("Â ", "").equals(""))) {
+            (node.getText().replaceFirst(" ", "").equals(""))) {
             isnotignoredsegment = false;
           }
         }
@@ -6532,8 +6502,7 @@ public ArrayList<String[]> populateSourceTxlf()
     new File(temp_new).delete();
   }
   
-  @SuppressWarnings("unused")
-private static int getTagPenalty(org.dom4j.Element source)
+  private static int getTagPenalty(org.dom4j.Element source)
   {
     int penalty = 0;
     penalty = (int)Math.round(source.elements("ut").size() * 0.5D);
@@ -6547,8 +6516,7 @@ private static int getTagPenalty(org.dom4j.Element source)
     return paratext;
   }
   
-  @SuppressWarnings("unused")
-private static String HtmlToPlain(String paratext)
+  private static String HtmlToPlain(String paratext)
   {
     paratext = paratext.replaceAll("&#009;", " ").replace("<cr>&#8629;</cr><br>", " ").replace("&#8209;", "-").replace("&lt;", "<").replace("&gt;", ">");
     return paratext;
@@ -6600,8 +6568,7 @@ private static String HtmlToPlain(String paratext)
     }
   }
   
-  @SuppressWarnings("rawtypes")
-private static void RemoveSequence(com.aspose.words.Node start, com.aspose.words.Node end)
+  private static void RemoveSequence(com.aspose.words.Node start, com.aspose.words.Node end)
   {
     com.aspose.words.Node curNode = start.nextPreOrder(start.getDocument());
     while ((curNode != null) && (!curNode.equals(end)))
@@ -6622,8 +6589,7 @@ private static void RemoveSequence(com.aspose.words.Node start, com.aspose.words
     }
   }
   
-  @SuppressWarnings("unused")
-private static String cumulateSegType(String oldtype, String newtype)
+  private static String cumulateSegType(String oldtype, String newtype)
   {
     if (oldtype.equals("mix")) {
       return "mix";
@@ -6860,7 +6826,7 @@ private static String cumulateSegType(String oldtype, String newtype)
     String[] esm = createESMString(locale).split(",");
     for (String sesm : esm)
     {
-      String reg = "\\" + sesm + "[ Â ]+";
+      String reg = "\\" + sesm + "[  ]+";
       Pattern regex = Pattern.compile(reg);
       String rep = sesm;
       if ((!locale.isFarEast()) || (locale.isKorean())) {
@@ -6895,9 +6861,9 @@ private static String cumulateSegType(String oldtype, String newtype)
     {
       String reg = "\\" + sesm;
       if ((!locale.isFarEast()) || (locale.isKorean())) {
-        reg = reg + " Â ";
+        reg = reg + "  ";
       } else {
-        reg = reg + "Â ";
+        reg = reg + " ";
       }
       Pattern regex = Pattern.compile(reg);
       String rep = sesm;
@@ -6912,7 +6878,7 @@ private static String cumulateSegType(String oldtype, String newtype)
     for (int i = 0; i < doc.getChildNodes(8, true).getCount(); i++)
     {
       Paragraph para = (Paragraph)doc.getChildNodes(8, true).get(i);
-      if ((para.getText().contains("Â ")) && (para.getText().replace("Â ", "").replace(" ", "").equals(ControlChar.PARAGRAPH_BREAK)))
+      if ((para.getText().contains(" ")) && (para.getText().replace(" ", "").replace(" ", "").equals(ControlChar.PARAGRAPH_BREAK)))
       {
         para.remove();
         i--;
@@ -6939,37 +6905,36 @@ private static String cumulateSegType(String oldtype, String newtype)
       for (int max = this.esps.length; i < max; i++) {
         if (this.esps[i] == ':')
         {
-          ESM = ESM + ",ï¼š";
-          this.esps = ArrayUtils.add(this.esps, ':');
+          ESM = ESM + ",：";
         }
         else if (this.esps[i] == '.')
         {
-          ESM = ESM + ",ï¼Ž";
-          ESM = ESM + ",ã€‚";
-          ESM = ESM + ",ï½¡";
+          ESM = ESM + ",．";
+          ESM = ESM + ",。";
+          ESM = ESM + ",｡";
         }
         else if (this.esps[i] == '!')
         {
-          ESM = ESM + ",ï¼�";
+          ESM = ESM + ",！";
         }
         else if (this.esps[i] == '?')
         {
-          ESM = ESM + ",ï¼Ÿ";
+          ESM = ESM + ",？";
         }
       }
     }
     else if (locale.isHindi())
     {
-      ESM = ESM + ",à¥¤";
+      ESM = ESM + ",।";
     }
     if (locale.isArabic())
     {
       int i = 0;
       for (int max = this.esps.length; i < max; i++) {
         if (this.esps[i] == '.') {
-          ESM = ESM + ",Û”";
+          ESM = ESM + ",۔";
         } else if (this.esps[i] == '?') {
-          ESM = ESM + ",ØŸ";
+          ESM = ESM + ",؟";
         }
       }
     }
