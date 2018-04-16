@@ -5,6 +5,9 @@ import com.aspose.cells.Cells;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
+import com.aspose.words.Comment;
+import com.aspose.words.CommentRangeEnd;
+import com.aspose.words.CommentRangeStart;
 import com.aspose.words.CompositeNode;
 import com.aspose.words.ControlChar;
 import com.aspose.words.FieldStart;
@@ -12,6 +15,7 @@ import com.aspose.words.FindReplaceOptions;
 import com.aspose.words.Font;
 import com.aspose.words.Footnote;
 import com.aspose.words.NodeCollection;
+import com.aspose.words.NodeType;
 import com.aspose.words.Paragraph;
 import com.aspose.words.Range;
 import com.aspose.words.Revision;
@@ -23,6 +27,8 @@ import com.aspose.words.SectionCollection;
 import com.aspose.words.Shape;
 import com.aspose.words.Table;
 import com.aspose.words.Underline;
+
+
 import java.awt.Color;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -6324,6 +6330,44 @@ public class FileAligner
     return fr_stats;
   }
   
+  private List<String[]> integrateNotesIntoSegments(String file) throws Exception {
+	  
+	  System.out.println("integrating comments....");
+	  
+	  List<String[]> notesinfo = new ArrayList<String[]>();
+	  int id = 0;
+	  org.dom4j.Document doc = XmlParser.parseXmlFile(file);
+	  org.dom4j.Element root = doc.getRootElement();
+	  List transunits = root.selectNodes("//*[name() = 'trans-unit']");
+	  for(Object transunit_obj : transunits){
+		  Element transunit = (Element)transunit_obj;
+		  Element target = transunit.element("target");
+		  if(target != null && !target.content().isEmpty()){
+			  List<Element> notes = transunit.elements("note");
+			  for(int i = notes.size()-1; i >= 0; i--){
+				  Element note = notes.get(i);
+				  List content = target.content();
+				  content.add(0, DocumentHelper.createText("[%cmt_" + id + "_s%]"));
+				  content.add(DocumentHelper.createText("[%cmt_" + id + "_e%]"));
+				  target.setContent(content);
+				  
+				  String[] noteinfo = new String[3];
+				  noteinfo[0] = note.attribute("from") != null?note.attributeValue("from"):"Unknown";
+				  noteinfo[1] = note.attribute("timestamp") != null?note.attributeValue("timestamp"):"Unknown";
+				  noteinfo[2] = note.getText();
+				  notesinfo.add(noteinfo);
+				  id++;
+			  }
+		  }
+	  }
+	  
+	  OutputStreamWriter writer = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(file)), "UTF8");
+	  doc.write(writer);
+	  writer.close();
+	    
+	  return notesinfo;
+  }
+  
   public void createTargetFile()
     throws Exception
   {
@@ -6337,7 +6381,12 @@ public class FileAligner
     merger.setOverwriteOriginalFile(false);
     XliffDocument xliffDocument = null;
     
-    xliffDocument = new XliffDocument(new File(this.translatedtxlf));
+    String tmp_translatedtxlf = this.translatedtxlf + ".tmp";
+    FileUtils.copyFile(new File(this.translatedtxlf), new File(tmp_translatedtxlf), true);
+    
+    List<String[]> notesinfo = integrateNotesIntoSegments(tmp_translatedtxlf);
+    
+    xliffDocument = new XliffDocument(new File(tmp_translatedtxlf));
     String skeletonFile = this.sourcefile;
     com.aspose.words.Document document = new AsposeFactory().createDocumentInstance(new FileInputStream(skeletonFile));
     Configuration docConfig = xliffDocument.getConfiguration(new OfficeConfigurationConverterImpl());
@@ -6393,10 +6442,43 @@ public class FileAligner
     removeIgnoredSegments(trg_doc, Locale.makeLocale(this.targetlanguage));
     removeIgnoredParagraphs(trg_doc);
     
+    insertComments(trg_doc, notesinfo);
+    
     trg_doc.save(this.aligneddoc);
     if (xliffDocument != null) {
       xliffDocument.dispose();
     }
+    
+    new File(tmp_translatedtxlf).delete();
+  }
+  
+  private void insertComments(com.aspose.words.Document doc, List<String[]> notesinfo) throws Exception{
+	  String reg = "\\[%cmt_(\\d)+_[se]%\\]";
+	  Pattern regex = Pattern.compile(reg);
+	  List<Run> collectedruns = new ArrayList<Run>();
+	  doc.getRange().replace(regex, new ReplaceEvaluatorCommentsPlaceHolders(notesinfo, doc, collectedruns), false);
+	  for(Run run : collectedruns){
+		  String[] ss = run.getText().substring(2, run.getText().length()-2).split("_");
+	      String[] noteinfo = notesinfo.get(Integer.parseInt(ss[1]));
+	      if(ss[2].equals("s")){
+	    	  Comment comment = new Comment(doc);
+	    	  Paragraph para = new Paragraph(doc);
+	    	  Run newrun = new Run(doc, noteinfo[2]);
+	    	  para.getRuns().add(newrun);
+	    	  comment.getParagraphs().add(para);
+	    	  comment.setAuthor(noteinfo[0]);
+	    	  SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssZ");
+	    	  Date date = formatter.parse(noteinfo[1].replaceAll("Z$", "+0000"));
+	    	  comment.setDateTime(date);
+	    	  CommentRangeStart start = new CommentRangeStart(doc, Integer.parseInt(ss[1]));
+	    	  run.getParentNode().insertAfter(comment, run);
+	    	  run.getParentNode().insertAfter(start, comment);
+	      }else{
+	    	  CommentRangeEnd end = new CommentRangeEnd(doc, Integer.parseInt(ss[1]));
+	    	  run.getParentNode().insertAfter(end, run);
+	      }
+	      run.setText("");
+	  }
   }
   
   public void createTargetCompareFile(String preservefmt)
@@ -6419,6 +6501,8 @@ public class FileAligner
     doc_new.save(temp_new);
     doc_new = new com.aspose.words.Document(temp_new);
     normalizeSpaceAfterESM(doc_new, Locale.makeLocale(this.targetlanguage));
+    //just want to delete comments
+    DeleteCommentsAndShapeAltText(doc_new);
     try
     {
       doc_old.compare(doc_new, "user", new Date());

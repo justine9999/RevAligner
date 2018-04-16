@@ -3,7 +3,11 @@ package revaligner.test;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.security.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -20,11 +24,15 @@ public class RevAlignerTest
   
   public static void main(String[] args)
   {
-	int num1 = 1;
-	int num2 = 2;
-	Integer[] ints = new Integer[]{num1, num2};
-	List<Integer> list = Arrays.asList(ints);
-	System.out.println(list);
+	String time = "20180409T162545Z";
+	SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssZ");
+	try {
+		Date date = formatter.parse(time.replaceAll("Z$", "+0000"));
+		System.out.println(date);
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	if(true) return;
 	applyAsposeLicense();
     try
