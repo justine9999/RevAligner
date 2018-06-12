@@ -24,17 +24,6 @@ public class RevAlignerTest
   
   public static void main(String[] args)
   {
-	String time = "20180409T162545Z";
-	SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssZ");
-	try {
-		Date date = formatter.parse(time.replaceAll("Z$", "+0000"));
-		System.out.println(date);
-	} catch (ParseException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	if(true) return;
-	applyAsposeLicense();
     try
     {
       FileAligner fa = new FileAligner();

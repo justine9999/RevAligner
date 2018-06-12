@@ -12,9 +12,9 @@ id="WebApp_ID" version="3.0">
 
   <context-param>
   	<param-name>contextConfigLocation</param-name>
-  		<param-value>/WEB-INF/RevAligner-*.xml</param-value>
+  	<param-value>/WEB-INF/RevAligner-*.xml</param-value>
   </context-param>
-    
+
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>

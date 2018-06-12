@@ -4132,6 +4132,7 @@ public class FileAligner
       String orgtrgtext = trg.text().replace("↵ ", "↵<br>").replace(" ", " ");
       
       String newtrgtext = "";
+      //System.out.println(newtrgs.get(newtrgcnt));
       if (!row.attr("id").isEmpty())
       {
         newtrgtext = trimText((String)newtrgs.get(newtrgcnt), false)[0];
@@ -6463,12 +6464,12 @@ public class FileAligner
 	      if(ss[2].equals("s")){
 	    	  Comment comment = new Comment(doc);
 	    	  Paragraph para = new Paragraph(doc);
-	    	  Run newrun = new Run(doc, noteinfo[2]);
+	    	  Run newrun = new Run(doc, noteinfo[2].replace("\n", ControlChar.LINE_BREAK));
 	    	  para.getRuns().add(newrun);
 	    	  comment.getParagraphs().add(para);
 	    	  comment.setAuthor(noteinfo[0]);
 	    	  SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssZ");
-	    	  Date date = formatter.parse(noteinfo[1].replaceAll("Z$", "+0000"));
+	    	  Date date = formatter.parse(noteinfo[1].replaceAll("[-:]", "").replaceAll("Z$", "+0000"));
 	    	  comment.setDateTime(date);
 	    	  CommentRangeStart start = new CommentRangeStart(doc, Integer.parseInt(ss[1]));
 	    	  run.getParentNode().insertAfter(comment, run);
@@ -6848,7 +6849,8 @@ public class FileAligner
   {
     List<Integer> availables = new ArrayList();
     
-    availables.add(Integer.valueOf(doublestrikethrough));
+    //disable for now because WF5 does not display double strike through formatting correctly.
+    //availables.add(Integer.valueOf(doublestrikethrough));
     for (int i = 0; i < Underline.getValues().length; i++)
     {
       int value = Underline.getValues()[i];

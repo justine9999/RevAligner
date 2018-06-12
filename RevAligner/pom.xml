@@ -20,11 +20,11 @@
          <systemPath>${basedir}\src\main\webapp\WEB-INF\lib\servlet-api.jar</systemPath>
       </dependency>
       <dependency>
-         <groupId>aspose-words-16.11.0-jdk16.jar</groupId>
-         <artifactId>aspose-words-16.11.0-jdk16.jar</artifactId>
+         <groupId>com.aspose</groupId>
+         <artifactId>aspose-words</artifactId>
          <scope>system</scope>
-         <version>1.0</version>
-         <systemPath>${basedir}\src\main\webapp\WEB-INF\lib\aspose-words-16.11.0-jdk16.jar</systemPath>
+         <version>17.11</version>
+         <systemPath>${basedir}\src\main\webapp\WEB-INF\lib\com.aspose.words-17.11.jar</systemPath>
       </dependency>
       <dependency>
          <groupId>com.aspose.cells-17.11.0.jar</groupId>
