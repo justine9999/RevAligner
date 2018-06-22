@@ -14,8 +14,10 @@
  
     <context:annotation-config/>
 	<context:component-scan base-package="revaligner.applicationconfiguration" />
+	<context:property-placeholder location="classpath:BaseConfiguration.properties" />
     <mvc:annotation-driven/>
     
-    <bean id="baseAppConfig" class="revaligner.applicationconfiguration.BaseAppConfig"/>
-    
+
+
+
 </beans>

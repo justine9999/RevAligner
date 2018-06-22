@@ -3,12 +3,18 @@ package revaligner.domain;
 import java.io.File;
 import java.io.Serializable;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
+
 import revaligner.applicationconfiguration.BaseAppConfig;
+
 
 public class RevProject
   implements Serializable
 {
-  private BaseAppConfig baseAppConfig = new BaseAppConfig();
+  @Autowired
+  private BaseAppConfig baseAppConfig;
   private String prjNumber;
   private String prjSubName;
   private String prjCreationDate;
@@ -104,6 +110,11 @@ public class RevProject
   public double getAutoSaveInterval()
   {
     return getBaseAppConfig().getAUTOSAVEINTERVAL();
+  }
+  
+  public double getJobCleanInterval()
+  {
+    return getBaseAppConfig().getJOBCLEANINTERVAL();
   }
   
   public String getUserFolder()

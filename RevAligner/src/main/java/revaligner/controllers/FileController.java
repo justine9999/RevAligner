@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.gs4tr.foundation.locale.Locale;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.Authentication;
@@ -66,7 +67,8 @@ public class FileController
 {
   @Inject
   SessionCollector sessionCollector;
-  ProjectManager projectManager = new ProjectManager();
+  @Autowired
+  ProjectManager projectManager;
   private boolean ispropertyfilebeingused = false;
   public static final String UTF8_BOM = "\uFEFF﻿";
   public boolean isredirect = false;
@@ -330,7 +332,7 @@ public class FileController
   
   @RequestMapping(value={"/searchprj"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
   @ResponseBody
-  public HashMap<String, String> searchproject(HttpServletResponse response, HttpServletRequest request)
+  public HashMap<String, String> searchproject(HttpServletResponse response, HttpServletRequest request, HttpSession httpSession)
     throws Exception
   {
     System.out.println("searching project...");
@@ -409,7 +411,9 @@ public class FileController
               System.out.println("new RA session created");
               System.out.println("prj collected: " + request.getSession().getId() + " pool size: " + this.sessionCollector.getSessionMap().size());
               
-              this.projectManager.setSessionLastAccessTime(System.nanoTime());
+              if(this.sessionCollector.getSessionMap().containsKey(httpSession)){
+            	  this.sessionCollector.getAccessTimeMap().put(httpSession, System.nanoTime());
+              }
             }
             else
             {
@@ -501,7 +505,9 @@ public class FileController
               System.out.println("new RA session created");
               System.out.println("prj collected: " + request.getSession().getId() + " pool size: " + this.sessionCollector.getSessionMap().size());
               
-              this.projectManager.setSessionLastAccessTime(System.nanoTime());
+              if(this.sessionCollector.getSessionMap().containsKey(httpSession)){
+            	  this.sessionCollector.getAccessTimeMap().put(httpSession, System.nanoTime());
+              }
             }
             else
             {
@@ -602,7 +608,9 @@ public class FileController
                 System.out.println("new RA session created");
                 System.out.println("prj collected: " + request.getSession().getId() + " pool size: " + this.sessionCollector.getSessionMap().size());
                 
-                this.projectManager.setSessionLastAccessTime(System.nanoTime());
+                if(this.sessionCollector.getSessionMap().containsKey(httpSession)){
+              	  this.sessionCollector.getAccessTimeMap().put(httpSession, System.nanoTime());
+                }
               }
               else
               {
@@ -1409,7 +1417,7 @@ public class FileController
       if (this.sessionCollector.getSessionMap().containsKey(httpSession))
       {
         httpSession.invalidate();
-        this.sessionCollector.getSessionMap().remove(httpSession);
+        this.sessionCollector.removeSession(httpSession);
         System.out.println("current session cancelled");
         System.out.println("prj collected: " + httpSession.getId() + " pool size: " + this.sessionCollector.getSessionMap().size());
       }
@@ -1473,7 +1481,9 @@ public class FileController
       this.projectManager.setPrjInfoFile(file.getAbsolutePath());
       System.out.println("project info saved");
       
-      this.projectManager.setSessionLastAccessTime(System.nanoTime());
+      if(this.sessionCollector.getSessionMap().containsKey(httpSession)){
+    	  this.sessionCollector.getAccessTimeMap().put(httpSession, System.nanoTime());
+      }
     }
     catch (Exception e)
     {
@@ -1666,7 +1676,9 @@ public class FileController
       if (!this.sessionCollector.getSessionMap().containsKey(httpSession))
       {
         this.sessionCollector.getSessionMap().put(httpSession, getUserName() + "_" + prjid);
-        this.projectManager.setSessionLastAccessTime(System.nanoTime());
+        if(this.sessionCollector.getSessionMap().containsKey(httpSession)){
+      	  this.sessionCollector.getAccessTimeMap().put(httpSession, System.nanoTime());
+        }
         System.out.println("new RA session created");
         System.out.println("prj collected: " + httpSession.getId() + " pool size: " + this.sessionCollector.getSessionMap().size());
       }
@@ -1696,8 +1708,8 @@ public class FileController
     {
       if (this.sessionCollector.getSessionMap().containsKey(httpSession))
       {
+    	this.sessionCollector.removeSession(httpSession);
         System.out.println("prj removed: " + httpSession.getId() + " pool size: " + this.sessionCollector.getSessionMap().size());
-        this.sessionCollector.getSessionMap().remove(httpSession);
       }
     }
     catch (Exception e)
@@ -1749,7 +1761,7 @@ public class FileController
       if (this.sessionCollector.getSessionMap().containsKey(httpSession))
       {
         httpSession.invalidate();
-        this.sessionCollector.getSessionMap().remove(httpSession);
+        this.sessionCollector.removeSession(httpSession);
         System.out.println("current session cancelled");
         System.out.println("prj collected: " + httpSession.getId() + " pool size: " + this.sessionCollector.getSessionMap().size());
       }
@@ -1824,7 +1836,7 @@ public class FileController
     {
       if (this.sessionCollector.getSessionMap().containsKey(httpSession))
       {
-        if (this.projectManager.isSessionTimesOut())
+        if (this.projectManager.isSessionTimesOut(httpSession))
         {
           System.out.println("session is about to time out");
           
@@ -1853,7 +1865,9 @@ public class FileController
   {
     try
     {
-      this.projectManager.setSessionLastAccessTime(System.nanoTime());
+      if(this.sessionCollector.getSessionMap().containsKey(httpSession)){
+    	  this.sessionCollector.getAccessTimeMap().put(httpSession, System.nanoTime());
+      }
     }
     catch (Exception e)
     {
@@ -1894,7 +1908,7 @@ public class FileController
     {
       if (this.sessionCollector.getSessionMap().containsKey(httpSession))
       {
-        this.sessionCollector.getSessionMap().remove(httpSession);
+        this.sessionCollector.removeSession(httpSession);
         System.out.println("current session cancelled");
         System.out.println("prj collected: " + httpSession.getId() + " pool size: " + this.sessionCollector.getSessionMap().size());
       }
@@ -1923,7 +1937,7 @@ public class FileController
     {
       if (this.sessionCollector.getSessionMap().containsKey(httpSession))
       {
-        this.sessionCollector.getSessionMap().remove(httpSession);
+        this.sessionCollector.removeSession(httpSession);
         System.out.println("current session cancelled");
         System.out.println("prj collected: " + httpSession.getId() + " pool size: " + this.sessionCollector.getSessionMap().size());
       }
@@ -1948,7 +1962,7 @@ public class FileController
     {
       if (this.sessionCollector.getSessionMap().containsKey(httpSession))
       {
-        this.sessionCollector.getSessionMap().remove(httpSession);
+        this.sessionCollector.removeSession(httpSession);
         System.out.println("current session cancelled");
         System.out.println("prj collected: " + httpSession.getId() + " pool size: " + this.sessionCollector.getSessionMap().size());
       }
@@ -2019,7 +2033,7 @@ public class FileController
       }
       if (httpsession != null)
       {
-        this.sessionCollector.getSessionMap().remove(httpsession);
+        this.sessionCollector.removeSession(httpsession);
         System.out.println("project reliefed...");
       }
       else

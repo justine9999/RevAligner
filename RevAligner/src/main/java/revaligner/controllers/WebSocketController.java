@@ -1,17 +1,25 @@
 package revaligner.controllers;
 
 import java.io.Serializable;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import revaligner.service.ProjectManager;
+import revaligner.service.SessionCollector;
 
 @Controller
 public class WebSocketController
   implements Serializable
 {
-ProjectManager projectManager = new ProjectManager();
+  @Inject
+  SessionCollector sessionCollector;
   @Autowired
   SimpMessagingTemplate template;
   
@@ -19,12 +27,12 @@ ProjectManager projectManager = new ProjectManager();
   public void getAlignProgress(String prjid)
     throws Exception
   {
-    //long starttime = System.nanoTime();
-    this.projectManager.setAlignProgress(0, prjid);
+	  System.out.println(prjid);
+    this.sessionCollector.getAlignProgressMap().put(prjid, 0);
     int prev = -1;
-    while ((this.projectManager.getAlignProgress(prjid) <= 100) || (this.projectManager.getAlignProgress(prjid) >= 200))
+    while ((this.sessionCollector.getAlignProgressMap().get(prjid) <= 100) || (this.sessionCollector.getAlignProgressMap().get(prjid) >= 200))
     {
-      int alignprogress = this.projectManager.getAlignProgress(prjid);
+      int alignprogress = this.sessionCollector.getAlignProgressMap().get(prjid);
       if (alignprogress == -1) {
         break;
       }
@@ -32,7 +40,7 @@ ProjectManager projectManager = new ProjectManager();
         if (alignprogress >= 200)
         {
           this.template.convertAndSend("/topic/" + prjid, Integer.valueOf(alignprogress));
-          this.projectManager.setAlignProgress(prev, prjid);
+          this.sessionCollector.getAlignProgressMap().put(prjid, prev);
         }
         else
         {
@@ -43,7 +51,7 @@ ProjectManager projectManager = new ProjectManager();
           }
           if (alignprogress == 100)
           {
-            this.projectManager.removeAlignProgressRecord(prjid);
+        	  this.sessionCollector.getAlignProgressMap().remove(prjid);
             break;
           }
         }

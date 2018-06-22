@@ -21,18 +21,28 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+
+import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import revaligner.domain.RevProject;
+
 
 public class ProjectManager
   implements Serializable
 {
-  private long session_last_access_time = 0L;
   private String aligntype = "";
   private FileAligner fileAligner = new FileAligner();
-  private RevProject revProject = new RevProject();
+  
+  @Inject
+  SessionCollector sessionCollector;
+  
+  @Autowired
+  private RevProject revProject;
   
   public RevProject getRevProject()
   {
@@ -61,17 +71,17 @@ public class ProjectManager
   
   public int getAlignProgress(String prjid)
   {
-    return this.fileAligner.getAlignProgress().containsKey(prjid) ? ((Integer)this.fileAligner.getAlignProgress().get(prjid)).intValue() : 0;
+    return this.sessionCollector.getAlignProgressMap().containsKey(prjid) ? ((Integer)this.sessionCollector.getAlignProgressMap().get(prjid)).intValue() : 0;
   }
   
   public void removeAlignProgressRecord(String prjid)
   {
-    this.fileAligner.removeAlignProgress(prjid);
+    this.sessionCollector.getAlignProgressMap().remove(prjid);
   }
   
   public void setAlignProgress(int alignProgress, String prjid)
   {
-    this.fileAligner.setAlignProgress(prjid, alignProgress);
+    this.sessionCollector.getAlignProgressMap().put(prjid, alignProgress);
   }
   
   public void setErrorMessage(String errormessage)
@@ -89,14 +99,14 @@ public class ProjectManager
     this.fileAligner.setStopExcution(true);
   }
   
-  public boolean isSessionTimesOut()
+  public boolean isSessionTimesOut(HttpSession httpSession)
     throws Exception
   {
     System.out.println("checking timeout: " + getRevProject().getPrjNumber());
     double timeoutinterval = this.revProject.getTimeOutInterval();
     System.out.println("timeoutinterval: " + timeoutinterval);
     long currenttime = System.nanoTime();
-    long elapsedTime = currenttime - this.session_last_access_time;
+    long elapsedTime = currenttime - this.sessionCollector.getAccessTimeMap().get(httpSession);
     double totalSeconds = elapsedTime / 1000000000.0D;
     System.out.println("totalSeconds: " + totalSeconds);
     if (totalSeconds > timeoutinterval) {
@@ -104,13 +114,7 @@ public class ProjectManager
     }
     return false;
   }
-  
-  public void setSessionLastAccessTime(long currenttime)
-    throws Exception
-  {
-    this.session_last_access_time = currenttime;
-  }
-  
+
   public void iniprj(String prjid, String isfilealigned, String isprjoutfortrans)
     throws Exception
   {
@@ -284,7 +288,7 @@ public class ProjectManager
       if (aligntype.equals("sequential")) {
         this.fileAligner.createAlignedXML();
       } else if (aligntype.equals("auto")) {
-        this.fileAligner.createAlignedXML_auto(prjid);
+        this.fileAligner.createAlignedXML_auto(prjid,sessionCollector);
       }
       setAlignProgress(90, prjid);
       if (!this.fileAligner.verifysegments())

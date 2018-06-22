@@ -16,6 +16,7 @@ import org.apache.log4j.RollingFileAppender;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import revaligner.service.FileAligner;
+import revaligner.service.SessionCollector;
 
 public class RevAlignerTest
   implements Serializable
@@ -44,7 +45,7 @@ public class RevAlignerTest
       System.out.println("convert reformatted target to txlf (seg)....");fa.convertReformattedTargetToTxlf(false);
       if (fa.verifyParas())
       {
-        fa.createAlignedXML_auto("testprj23");
+        fa.createAlignedXML_auto("testprj23", new SessionCollector());
         fa.verifysegments();
         //fa.exportHtmlLogFileForTranslation(fa.populateSourceTxlf(), fa.getRepsAndFuzzyReps());
       }

@@ -17,5 +17,6 @@
     <mvc:annotation-driven/>
     
     <bean id="sessionCollector" class="revaligner.service.SessionCollector" scope="singleton"/>
+    <bean id="jobCleaner" class="revaligner.service.JobCleaner" scope="singleton"/>
     
 </beans>

@@ -248,6 +248,7 @@
 		});
 	
 	    $('body').on('click', '*', function(e) {
+	    	
 	    	if(typeof prjid == 'undefined') {
 				return;
 			}

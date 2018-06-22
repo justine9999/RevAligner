@@ -60,6 +60,8 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -138,7 +140,6 @@ public class FileAligner
   private LinkedHashMap<String, String> aligned_para_seqs;
   private int nullcnt = 0;
   private String estimateNBAlignerCompTime = "";
-  private static HashMap<String, Integer> alignProgress = new HashMap();
   private LinkedHashMap<Integer, List> txlftrgsegmap;
   private LinkedHashMap<Integer, boolean[]> txlftrgsewsmap;
   private LinkedHashMap<String, List<String>> missing_trg_segs;
@@ -151,6 +152,8 @@ public class FileAligner
   private static double textexpansionthreshold = 2.0D;
   private String errorreason = "";
   private char[] esps = { '.', '?', '!' };
+  
+
   
   public FileAligner()
   {
@@ -181,23 +184,6 @@ public class FileAligner
     {
       e.printStackTrace();
     }
-  }
-  
-  public HashMap<String, Integer> getAlignProgress()
-  {
-    return alignProgress;
-  }
-  
-  public void removeAlignProgress(String prjid)
-  {
-    if (alignProgress.containsKey(prjid)) {
-      alignProgress.remove(prjid);
-    }
-  }
-  
-  public void setAlignProgress(String prjid, int alignProgress)
-  {
-    this.alignProgress.put(prjid, Integer.valueOf(alignProgress));
   }
   
   public void setnullcnt(int cnt)
@@ -1487,7 +1473,7 @@ public class FileAligner
     return res;
   }
   
-  public void createAlignedXML_auto(String prjid)
+  public void createAlignedXML_auto(String prjid, SessionCollector sessionCollector)
     throws Exception
   {
     System.out.println("creating aligned xml with nbAligner....");
@@ -1777,7 +1763,7 @@ public class FileAligner
           try
           {
             int minutes = 200 + Integer.parseInt(this.estimateNBAlignerCompTime);
-            setAlignProgress(prjid, minutes);
+            sessionCollector.getAlignProgressMap().put(prjid, minutes);
             this.estimateNBAlignerCompTime = "";
           }
           catch (Exception ex)

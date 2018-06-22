@@ -11,6 +11,8 @@ import javax.naming.directory.InitialDirContext;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping({"/user"})
+@Scope(value="session", proxyMode=ScopedProxyMode.TARGET_CLASS)
 public class UserController
 {
   private final InMemoryUserDetailsManager inMemoryUserDetailsManager;

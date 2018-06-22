@@ -119,7 +119,7 @@ $(function () {
             }
     });
 	
-	$('body').on('click', '*', function(e) {
+	$('body').on('click', '* :not(.backtomain)', function(e) {
 		if(typeof prjid == 'undefined') {
 			return;
 		}
