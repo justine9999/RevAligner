@@ -551,6 +551,32 @@ public class ProjectManager
     return langcodemap;
   }
   
+  public String findProjectIdBySubmissionName(String subname) throws Exception {
+	  String searchfolder = getRevProject().getBaseWorkingPath();
+	    for (File file : new File(searchfolder).listFiles()) {
+	      if (file.isDirectory())
+	      {
+	        for (File sfile : file.listFiles()) {
+	          if ((sfile.isDirectory()) && (sfile.getName().startsWith("RA#")))
+	          {
+	            String name = sfile.getName();
+	            String prjinfofile = sfile.getAbsolutePath() + File.separator + "_.info";
+	            if(new File(prjinfofile).exists()){
+	            	FileInputStream in = new FileInputStream(prjinfofile);
+	            	Properties props = new Properties();
+	            	props.load(in);
+	            	String submission = props.getProperty("raprojectsubmissionname");
+	            	if(submission != null && submission.equals(subname)){
+	            		return name;
+	            	}
+	            }          
+	          }
+	        }
+	      }
+	    }
+	    return "";
+  }
+  
   public boolean searchProjectFolder(String prjid)
     throws Exception
   {

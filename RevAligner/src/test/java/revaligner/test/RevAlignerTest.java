@@ -9,12 +9,19 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.Comparator;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import revaligner.service.FileAligner;
 import revaligner.service.SessionCollector;
 
@@ -25,6 +32,8 @@ public class RevAlignerTest
   
   public static void main(String[] args)
   {
+	if(true) return;
+	  
     try
     {
       FileAligner fa = new FileAligner();

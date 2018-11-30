@@ -336,15 +336,31 @@ public class FileController
     throws Exception
   {
     System.out.println("searching project...");
-    System.out.println("pid: " + request.getParameter("prjid"));
-    HashMap<String, String> prjinfo = new HashMap();
+    
+    HashMap<String, String> prjinfo = new HashMap();   
+    
+    String clue = request.getParameter("prjid");
+    String prjid = "";
+    if(clue.startsWith("RA#")){
+    	prjid = clue;
+    }else{
+    	prjid = this.projectManager.findProjectIdBySubmissionName(clue);
+    	if(prjid.equals("")){
+    		System.out.println("target project not found by the submission name");
+            
+            response.sendError(500, "target project not found by the submission name");
+            response.setStatus(500);
+            return prjinfo;
+    	}
+    }
+    prjinfo.put("raprojectnumber", prjid);
+    
     try
     {
       Thread.sleep(2000L);
-      String prjid = request.getParameter("prjid");
       String token = request.getParameter("token");
       System.out.println("token: " + token);
-      if (isAdmin())
+      if(isAdmin())
       {
         System.out.println("searching project as admin");
         String username = this.projectManager.searchProjectFolderAsAdminUser(prjid);

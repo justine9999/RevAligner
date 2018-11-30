@@ -392,14 +392,14 @@
 		buttonreview = $('<button type="button" class="btn btn-link btn-xs toreview" data-toggle="tooltip" title="Need review" />').append($('<i class="el el-question-sign" />'));
 		menu.append(segid)
 			.append(buttonremovel)
-			.append(buttoninsabove)
+			//.append(buttoninsabove)
 			.append(buttonswapextra)
-			.append(buttoninsbelow)
-			.append(buttonsplit)
-			.append(buttonmerge)
-			.append(buttonswap)
-			.append(buttonconclean)
-			.append(buttonedit)
+			//.append(buttoninsbelow)
+			//.append(buttonsplit)
+			//.append(buttonmerge)
+			//.append(buttonswap)
+			//.append(buttonconclean)
+			//.append(buttonedit)
 			.append(buttonconfirm)
 			.append(buttonreview)
 		$combo_target.append(menu)
@@ -2302,6 +2302,14 @@
               	  issavingfile = false;
               }
         });
+	});
+	
+	$('.nextneedtocheck').on('click', function () {
+		event.preventDefault();
+		if(!$('#searchspecialtab').hasClass("active")){
+			$('.nav-tabs a[href="#special"]').tab('show');
+    	}
+    	$('.searchspecialtext').click();
 	});
 	
 	$('.saveexportfile').on('click', function () {
@@ -4348,6 +4356,7 @@ a{
   		<div class="panel-heading"></div>
   		<div class="quicktools">
   			<a class="quicksavefile" data-toggle="tooltip" title="Save"><span class="glyphicon glyphicon-floppy-disk"></span></a>
+  			<a class="nextneedtocheck" data-toggle="tooltip" title="Go to next segment that needs to check"><span class="glyphicon glyphicon-arrow-right"></span></a>
   		</div>
   		<div class="panel-body">
   			<div id="sourcegrids" class="gridster">
@@ -5202,6 +5211,11 @@ body
 .TokenT {
 	padding-top:4px;
 }
+
+.quicksavefile {
+	margin-right: 10px;
+}
+
 </style>
 </body>
 </html>

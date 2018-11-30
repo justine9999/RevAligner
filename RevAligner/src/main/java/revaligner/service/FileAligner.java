@@ -527,6 +527,10 @@ public class FileAligner
     System.out.println("creating fake tracks...");
     createFakeTrackChanges(doc_src);
     
+    //a temporary bug fix: hidden paragraph is generated randomly
+    System.out.println("unhide everything...");
+    unhideAll(doc_src);
+    
     File reformattedsourcefolder = new File(this.prjfolder + "/source_reformatted");
     if (!reformattedsourcefolder.exists()) {
       reformattedsourcefolder.mkdirs();
@@ -818,6 +822,14 @@ public class FileAligner
         doc.getRevisions().get(0).accept();
       }
     }
+  }
+  
+  private void unhideAll(com.aspose.words.Document doc){
+	  for (int i = 0; i < doc.getChildNodes(NodeType.RUN, true).getCount(); i++)
+	  {
+		  Run run = (Run)doc.getChildNodes(NodeType.RUN, true).get(i);
+		  run.getFont().setHidden(false);
+	  }
   }
   
   private void mergeSectionsInDocuemnt(com.aspose.words.Document doc)
@@ -1571,7 +1583,7 @@ public class FileAligner
         
         merged_src_text.setText(merged_text.replace("&amp;paradel;", "").replace("&amp;parains;", ""));
         
-        String[] split_merged_text = merged_text.replaceAll("(&amp;paradel;)+", "&amp;paradel;").replaceAll("^&amp;paradel;", "").replaceAll("&amp;paradel;$", "").split("&amp;paradel;");
+        String[] split_merged_text = merged_text.replace("&amp;parains;", "").replaceAll("(&amp;paradel;)+", "&amp;paradel;").replaceAll("^&amp;paradel;", "").replaceAll("&amp;paradel;$", "").split("&amp;paradel;");
         List<String> segmentsGroup = segmentStringWithRevs(merged_text.replaceAll("(&amp;paradel;)+", "&amp;paradel;").replace("&amp;parains;", ""), this.sourcelanguage);
         List<List<String>> resegmentedGroup = new ArrayList();
         resegmentedGroup.add(new ArrayList());
@@ -4041,7 +4053,13 @@ public class FileAligner
     } else {
       t[2] = "false";
     }
-    t[0] = text.trim().replaceAll("(?s)<ins>(\\s|<br>)*</ins>$", "").replaceAll("(?s)<del>(\\s|<br>)*</del>$", "").trim().replaceAll("(?s)(\\s|<br>)+</ins>$", "</ins>").replaceAll("(?s)(\\s|<br>)+</del>$", "</del>").replaceAll("(?s)^<ins>(\\s|<br>)*</ins>", "").replaceAll("(?s)^<del>(\\s|<br>)*</del>", "").trim().replaceAll("(?s)^<ins>(\\s|<br>)+", "<ins>").replaceAll("(?s)^<del>(\\s|<br>)+", "<del>");
+    t[0] = text;
+    int prev_len = Integer.MAX_VALUE;
+    while(t[0].length() != prev_len){
+    	prev_len = t[0].length();
+        t[0] = t[0].trim().replaceAll("(?s)<ins>(\\s|<br>)*</ins>$", "").replaceAll("(?s)<del>(\\s|<br>)*</del>$", "").trim().replaceAll("(?s)(\\s|<br>)+</ins>$", "</ins>").replaceAll("(?s)(\\s|<br>)+</del>$", "</del>").replaceAll("(?s)^<ins>(\\s|<br>)*</ins>", "").replaceAll("(?s)^<del>(\\s|<br>)*</del>", "").trim().replaceAll("(?s)^<ins>(\\s|<br>)+", "<ins>").replaceAll("(?s)^<del>(\\s|<br>)+", "<del>");
+    }
+
     return t;
   }
   
@@ -6443,8 +6461,11 @@ public class FileAligner
 	  String reg = "\\[%cmt_(\\d)+_[se]%\\]";
 	  Pattern regex = Pattern.compile(reg);
 	  List<Run> collectedruns = new ArrayList<Run>();
+	  doc.joinRunsWithSameFormatting();
 	  doc.getRange().replace(regex, new ReplaceEvaluatorCommentsPlaceHolders(notesinfo, doc, collectedruns), false);
+
 	  for(Run run : collectedruns){
+
 		  String[] ss = run.getText().substring(2, run.getText().length()-2).split("_");
 	      String[] noteinfo = notesinfo.get(Integer.parseInt(ss[1]));
 	      if(ss[2].equals("s")){
@@ -6454,6 +6475,7 @@ public class FileAligner
 	    	  para.getRuns().add(newrun);
 	    	  comment.getParagraphs().add(para);
 	    	  comment.setAuthor(noteinfo[0]);
+	    	  comment.setId_INodeWithAnnotationId(Integer.parseInt(ss[1]));
 	    	  SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssZ");
 	    	  Date date = formatter.parse(noteinfo[1].replaceAll("[-:]", "").replaceAll("Z$", "+0000"));
 	    	  comment.setDateTime(date);

@@ -68,10 +68,11 @@ public class UserController
         @SuppressWarnings("unused")
 		DirContext authContext = new InitialDirContext(environment);
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<GrantedAuthority>();
-        if ((username.equals("nyammine")) || (username.equals("mxiang"))) {
+        if ((username.equals("nyammine")) || (username.equals("mxiang")) || (username.equals("njohnson")) || (username.equals("cfarah")) || (username.equals("ehom")) || (username.equals("bverbraak"))) {
           grantedAuthorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         } else {
-          grantedAuthorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
+          //grantedAuthorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
+          grantedAuthorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
         UserDetails user = new User(username, password, grantedAuthorityList);
         if (this.inMemoryUserDetailsManager.userExists(username))

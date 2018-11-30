@@ -973,8 +973,7 @@ $(function () {
 				  $("#createproject").modal("hide");
 				  $('.projects').removeClass("disabled");
 				  setTimeout(function(){
-					  $("#continueproject").modal({backdrop: false});
-					  $("#continueproject").modal({show: true});
+					  $("#continueproject").modal({backdrop: false, show: true});					 
 				  },300);
               },
               
@@ -987,6 +986,13 @@ $(function () {
                 }
         	});
 		}
+	});
+	
+	$('#continueproject').on('show.bs.modal', function (e) {
+		setTimeout(function(){
+			console.log("before lick");
+			$('.projects').click();				 
+		},600);
 	});
 	
 	function makeid()
@@ -1105,7 +1111,7 @@ $(function () {
 					$(".checkprjnum").css('cursor', 'not-allowed');
 					$(".checkprjnum").off();
 					
-              	    prjid = prjnum;
+              	    prjid = data.raprojectnumber;
               	    subname = data.raprojectsubmissionname;
               	    
               	  	prvprjinfo.push(data.raprojectsourcelanguagecode);
@@ -1288,6 +1294,7 @@ $(function () {
 						$("#uploadModal").modal({show: true});
 
 		  			}, 'text');
+					
 				},300);
 			}
 		});
@@ -1711,6 +1718,7 @@ $(function () {
 	});
 	
 	$("body").on("click",".projects", function(){
+		console.log("click projects list");
 		$(".prjitem").remove();
 		$('.prjlist').animate({
 			'left':'0%'},{

@@ -48,6 +48,7 @@ public class ReplaceEvaluatorCommentsPlaceHolders
       }
       //runs.add(currentNode);
       collectedruns.add(0,(Run)currentNode);
+      System.out.println("1: " + currentNode.getText());
       remainingLength -= currentNode.getText().length();
       do
       {
@@ -62,6 +63,7 @@ public class ReplaceEvaluatorCommentsPlaceHolders
       splitRun((Run)currentNode, remainingLength);
       //runs.add(currentNode);
       collectedruns.add(0,(Run)currentNode);
+      System.out.println("2: " + currentNode.getText());
     }
     //for (Object orun : runs) {
       //Run run = (Run)orun;
