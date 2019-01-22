@@ -532,7 +532,7 @@ $(function () {
 			            $('.show').css('color','black');
 			            $('.show').text('0% Complete');
 			          
-	            	  	$('[data-toggle="popover"]').popover({container: 'body', trigger: 'manual', delay: {show: 0, hide: 0}, content: (xhr.responseText+" !")});
+			            $('[data-toggle="popover"]').popover({container: 'body', trigger: 'manual', delay: {show: 0, hide: 0}, html: true, content: (xhr.responseText+" !"+"<br /><br />"+"<a class=\"pafilelink\">Paragraph Alignment File</a>")});
   					  	$('[data-toggle="popover"]').popover('show');
 	            	  }, 1000);
 	             }
@@ -542,7 +542,7 @@ $(function () {
 
 	$(document).mousedown(function (e)
 	{
-	    var container = $(".processfiles");
+	    var container = $(".popover");
 	    if ((!container.is(e.target)) && container.has(e.target).length == 0) 
 	    {
 	    	var popover = $('.processfiles').data('bs.popover');
@@ -1947,6 +1947,11 @@ $(function () {
 			$('.prjitem').css('background-color','');
 			$(this).css('background-color','#ececec');
 		}
+	});
+	
+	$("body").on("click",".pafilelink", function(){
+		console.log("downloading pa file link");
+		downloadFromURL('getparaalignment', function(){});
 	});
 	
 	$("body").on("click",".fa-clone", function(){

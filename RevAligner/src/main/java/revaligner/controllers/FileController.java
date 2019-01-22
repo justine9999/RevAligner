@@ -292,7 +292,7 @@ public class FileController
       this.projectManager.setAlignProgress(-1, prjid);
       System.out.println("files failed to be aligned");
       e.printStackTrace();
-      response.getWriter().write(this.projectManager.getErrorMessage());
+      response.getWriter().write(e.getMessage());
       
       response.setStatus(500);
     }
@@ -1650,6 +1650,32 @@ public class FileController
     catch (Exception e)
     {
       System.out.println("translation memory reviewed failed to be exported");
+      e.printStackTrace();
+      response.sendError(500, e.getMessage());
+      response.setStatus(500);
+    }
+  }
+  
+  @RequestMapping(value={"/getparaalignment"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+  @ResponseBody
+  public void getparaalignment(HttpServletResponse response)
+    throws Exception
+  {
+    System.out.println("exporting paragraph alignment file...");
+    try
+    {
+      Thread.sleep(2000L);
+      String pafile = this.projectManager.getParagraphAlignmentFile();
+      
+      response.setContentType("text/plain");
+      response.setHeader("Content-disposition", "attachment; filename=\"" + new File(pafile).getName());
+      FileCopyUtils.copy(Files.readAllBytes(Paths.get(pafile, new String[0])), response.getOutputStream());
+      
+      System.out.println("paragraph alignment file exported");
+    }
+    catch (Exception e)
+    {
+      System.out.println("paragraph alignment file failed to be exported");
       e.printStackTrace();
       response.sendError(500, e.getMessage());
       response.setStatus(500);

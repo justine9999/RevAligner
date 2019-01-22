@@ -13,6 +13,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Comparator;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
@@ -32,6 +33,13 @@ public class RevAlignerTest
   
   public static void main(String[] args)
   {
+	  int[] A = new int[]{-1,-4,1,3};
+	  final Integer[] sorted = ArrayUtils.toObject(A);
+	  Arrays.sort(sorted, new Comparator<Integer>() {
+		    public int compare(Integer a, Integer b) {
+		        return Math.abs(a)-Math.abs(b);
+		    }
+		});
 	if(true) return;
 	  
     try

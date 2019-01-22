@@ -151,4 +151,9 @@ public class RevProject
   {
     return getPrjWorkingPath() + File.separator + "source_formatted";
   }
+  
+  public String getParagraphAlignmentFile()
+  {
+    return getPrjWorkingPath() + File.separator + "verifyParas.xlsx";
+  }
 }

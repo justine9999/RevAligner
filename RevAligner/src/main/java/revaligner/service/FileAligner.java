@@ -1746,7 +1746,7 @@ public class FileAligner
 
 
 
-    ProcessBuilder pb = new ProcessBuilder(new String[] { pahtexe, "-i", this.nbalignerfolder, "-o", this.nbalignerfolder, "-lang_pairs", this.sourcelanguage + "_" + this.targetlanguage, "-lang_detect", "normal", "-identicals", "-match_filenames", "-txml_or_xmx_output", "-docnames_output", "-disallow_src_merging" });
+    ProcessBuilder pb = new ProcessBuilder(new String[] { pahtexe, "-i", this.nbalignerfolder, "-o", this.nbalignerfolder, "-lang_pairs", this.sourcelanguage + "_" + this.targetlanguage, "-lang_detect", "off", "-identicals", "-match_filenames", "-txml_or_xmx_output", "-docnames_output", "-disallow_src_merging" });
     pb.redirectErrorStream(true);
     
     Process p = pb.start();

@@ -59,6 +59,10 @@ public class ProjectManager
     return this.aligntype;
   }
   
+  public String getParagraphAlignmentFile(){
+	  return this.revProject.getParagraphAlignmentFile();
+  }
+  
   public void setPrjInfoFile(String prjinfo)
   {
     this.fileAligner.setPrjInfoFile(prjinfo);
@@ -300,7 +304,7 @@ public class ProjectManager
     else
     {
       setAlignProgress(0, prjid);
-      throw new FileNotFoundException("files cannot be aligned");
+      throw new FileNotFoundException("files not aligned on paragraph level");
     }
   }
   
