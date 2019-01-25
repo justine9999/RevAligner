@@ -924,6 +924,185 @@ public class FileAligner
     }
   }
   
+  private void mergeParagraphsInShape(com.aspose.words.Shape shape, com.aspose.words.Document doc) throws Exception {
+	  ExtractionSupportImpl extractionSupportImpl = new ExtractionSupportImpl(Locale.makeLocale(this.sourcelanguage), Locale.makeLocale(this.targetlanguage));
+	    Configuration config = new BaseConfiguration();
+	    config.setProperty("extraction.tokens.extract", "all");
+	    extractionSupportImpl.setConfiguration(config);
+	    
+	    Paragraph prev_para = null;
+	    Paragraph sample = new Paragraph(doc);
+	    
+	    boolean isStillSplitting = false;
+	    boolean ismoveaway = false;
+	    boolean ismoveto = false;
+	    int toskip = 0;
+	    List<Paragraph> toremove = new ArrayList();
+	    for (int i = 0; i < shape.getChildNodes(0, true).getCount(); i++)
+	    {
+	      com.aspose.words.Node node = shape.getChildNodes(0, true).get(i);
+	      if (node.getNodeType() == 13)
+	      {
+	        ismoveaway = true;
+	      }
+	      else if (node.getNodeType() == 14)
+	      {
+	        ismoveaway = false;
+	      }
+	      else if (node.getNodeType() == 15)
+	      {
+	        ismoveto = true;
+	      }
+	      else if (node.getNodeType() == 16)
+	      {
+	        ismoveto = false;
+	      }
+	      else if (node.getNodeType() == 8)
+	      {
+	        if (toskip > 0)
+	        {
+	          toskip--;
+	        }
+	        else
+	        {
+	          Paragraph para = (Paragraph)node;
+	          System.out.println("para 0: " + "\"" + para.getText() + "\"");
+	          if ((para.isEndOfSection()) && (
+	            (para.isInsertRevision()) || (para.isDeleteRevision()))) {
+	            this.isSectionBreakDeletedORInserted = true;
+	          }
+	          if ((para.isInCell()) && (para.getPreviousSibling() == null))
+	          {
+	            prev_para = null;
+	            isStillSplitting = false;
+	          }
+
+	          if (prev_para != null)
+	          {
+	            if (isStillSplitting)
+	            {
+	              if ((prev_para.isInsertRevision()) || (ismoveto))
+	              {
+	                if (extractionSupportImpl.isExtractable(getParaText(para))) {
+	                  para.appendChild(new Run(doc, "&parains;"));
+	                }
+	              }
+	              else {
+	                isStillSplitting = false;
+	              }
+	            }
+	            else if (((prev_para.isInsertRevision()) || (ismoveto)) && (!isWholeParaInserted(prev_para)))
+	            {
+	              if (extractionSupportImpl.isExtractable(getParaText(para))) {
+	                para.appendChild(new Run(doc, "&parains;"));
+	              }
+	              isStillSplitting = true;
+	            }
+	            if ((para.isEndOfCell()) || (para.isEndOfHeaderFooter()) || (para.isEndOfSection())) {
+	              isStillSplitting = false;
+	            }
+
+	            if (((prev_para.isDeleteRevision()) || (ismoveaway)) && (!isWholeParaDeleted(prev_para)))
+	            {
+	              if ((para.getChildNodes(21, true).getCount() != 0) || (para.isDeleteRevision()))
+	              {
+	                prev_para.appendChild(new Run(doc, "&paradel;"));
+	                i++;
+	                for (int j = 0; j < para.getChildNodes().getCount(); j++)
+	                {
+	                  com.aspose.words.Node nd = para.getChildNodes().get(j);
+	                  if ((nd.getNodeType() != 21) || (!((Run)nd).isDeleteRevision()) || (!((Run)nd).getText().contains(ControlChar.PAGE_BREAK)))
+	                  {
+	                    prev_para.appendChild(nd.deepClone(true));
+	                    i++;
+	                  }
+	                }
+	                if (para.getChildNodes(14, true).getCount() != 0) {
+	                  ismoveaway = false;
+	                }
+	              }
+	              prev_para.setDeleteRevision(para.getDeleteRevision());
+	              prev_para.setInsertRevision(para.getInsertRevision());
+	              if (!para.isInsertRevision())
+	              {
+	                for (int z = 0; z < para.getChildNodes().getCount(); z++)
+	                {
+	                  com.aspose.words.Node temp_nd = para.getChildNodes().get(z);
+	                  if (temp_nd.getNodeType() == 15) {
+	                    ismoveto = true;
+	                  } else if (temp_nd.getNodeType() == 16) {
+	                    ismoveto = false;
+	                  }
+	                }
+	                para.remove();
+	                i--;
+	              }
+	              else
+	              {
+	                toremove.add(para);
+	                prev_para = para;
+	              }
+	            }
+	            else if ((prev_para.isDeleteRevision()) && (isWholeParaDeleted(prev_para)))
+	            {
+	              prev_para.setDeleteRevision(sample.getDeleteRevision());
+	              prev_para = para;
+	            }
+	            else if ((para.isEndOfCell()) || (para.isEndOfHeaderFooter()))
+	            {
+	              para.setDeleteRevision(sample.getDeleteRevision());
+	              prev_para = null;
+	            }
+	            else
+	            {
+	              prev_para = para;
+	            }
+	          }
+	          else
+	          {
+	            if ((isStillSplitting) && (extractionSupportImpl.isExtractable(getParaText(para))))
+	            {
+	              para.appendChild(new Run(doc, "&parains;"));
+	              i++;
+	            }
+	            if (para.isInsertRevision())
+	            {
+	              if ((extractionSupportImpl.isExtractable(getParaText(para))) && (!isWholeParaInserted(para))) {
+	                isStillSplitting = true;
+	              }
+	            }
+	            else {
+	              isStillSplitting = false;
+	            }
+	            if ((para.isEndOfCell()) || (para.isEndOfHeaderFooter()))
+	            {
+	              if ((para.getNextSibling() == null) && (para.getPreviousSibling() == null) && (para.isDeleteRevision()) && (isWholeParaDeleted(para))) {
+	                para.setDeleteRevision(sample.getDeleteRevision());
+	              }
+	              prev_para = null;
+	            }
+	            else
+	            {
+	              prev_para = para;
+	            }
+	          }
+	        }
+	      }
+	      else if (node.getNodeType() == 5)
+	      {
+	        Table tb = (Table)node;
+	        if (isWholeTableDeleted(tb, doc)) {
+	          toskip = tb.getChildNodes(8, true).getCount();
+	        }
+	      }
+	    }
+	    for (Paragraph p : toremove) {
+	      if (p != null) {
+	        p.removeAllChildren();
+	      }
+	    }
+  }
+  
   private void mergeParagraphsInDocuemnt(com.aspose.words.Document doc)
     throws Exception
   {
@@ -935,18 +1114,22 @@ public class FileAligner
     Paragraph prev_para = null;
     Paragraph sample = new Paragraph(doc);
     
-    Shape shape = null;
     boolean isStillSplitting = false;
     boolean ismoveaway = false;
     boolean ismoveto = false;
     int toskip = 0;
     List<Paragraph> toremove = new ArrayList();
+    List<Shape> shapestoprocess = new ArrayList();
     for (int i = 0; i < doc.getChildNodes(0, true).getCount(); i++)
     {
       com.aspose.words.Node node = doc.getChildNodes(0, true).get(i);
       if (node.getNodeType() == 18)
       {
-        shape = (Shape)node;
+        //handle paragraphs in shapes separately
+    	  Shape shape = (Shape)node;
+    	  shapestoprocess.add(shape);
+    	  i += shape.getChildNodes(0, true).getCount();
+    	  continue;
       }
       else if (node.getNodeType() == 13)
       {
@@ -982,11 +1165,7 @@ public class FileAligner
             prev_para = null;
             isStillSplitting = false;
           }
-          if ((shape != null) && (shape.getChildNodes(8, true).getCount() > 0) && (shape.getChildNodes(8, true).get(0) == para))
-          {
-            prev_para = null;
-            isStillSplitting = false;
-          }
+
           if (prev_para != null)
           {
             if (isStillSplitting)
@@ -1011,9 +1190,7 @@ public class FileAligner
             if ((para.isEndOfCell()) || (para.isEndOfHeaderFooter()) || (para.isEndOfSection())) {
               isStillSplitting = false;
             }
-            if ((shape != null) && (shape.getChildNodes(8, true).getCount() > 0) && (shape.getChildNodes(8, true).get(shape.getChildNodes(8, true).getCount() - 1) == para)) {
-              isStillSplitting = false;
-            }
+
             if (((prev_para.isDeleteRevision()) || (ismoveaway)) && (!isWholeParaDeleted(prev_para)))
             {
               if ((para.getChildNodes(21, true).getCount() != 0) || (para.isDeleteRevision()))
@@ -1065,11 +1242,6 @@ public class FileAligner
               para.setDeleteRevision(sample.getDeleteRevision());
               prev_para = null;
             }
-            else if ((shape != null) && (shape.getChildNodes(8, true).getCount() > 0) && (shape.getChildNodes(8, true).get(shape.getChildNodes(8, true).getCount() - 1) == para))
-            {
-              para.setDeleteRevision(sample.getDeleteRevision());
-              prev_para = null;
-            }
             else
             {
               prev_para = para;
@@ -1098,13 +1270,6 @@ public class FileAligner
               }
               prev_para = null;
             }
-            else if ((shape != null) && (shape.getChildNodes(8, true).getCount() > 0) && (shape.getChildNodes(8, true).get(shape.getChildNodes(8, true).getCount() - 1) == para))
-            {
-              if ((para.getNextSibling() == null) && (para.getPreviousSibling() == null) && (para.isDeleteRevision()) && (isWholeParaDeleted(para))) {
-                para.setDeleteRevision(sample.getDeleteRevision());
-              }
-              prev_para = null;
-            }
             else
             {
               prev_para = para;
@@ -1124,6 +1289,9 @@ public class FileAligner
       if (p != null) {
         p.removeAllChildren();
       }
+    }
+    for(Shape shape : shapestoprocess){
+    	mergeParagraphsInShape(shape, doc);
     }
     doc.save("C:\\Program Files (x86)\\pa\\paprjs\\testprj23\\test.docx");
   }
@@ -1753,6 +1921,7 @@ public class FileAligner
     InputStreamReader isr = new InputStreamReader(p.getInputStream());
     BufferedReader br = new BufferedReader(isr);
     
+    Writer auto_aligner_out = new OutputStreamWriter(new FileOutputStream(this.prjfolder + File.separator + "auto-aligner_output.txt"), "UTF-8");
 
     boolean sentESTTime = false;
     boolean alignstart = false;
@@ -1760,6 +1929,10 @@ public class FileAligner
     while ((lineRead = br.readLine()) != null)
     {
       System.out.println(lineRead);
+      synchronized(auto_aligner_out){
+    	  auto_aligner_out.write(lineRead + "\r\n");
+      }
+          
       if (lineRead.contains("Aligning..."))
       {
         alignstart = true;
@@ -1787,6 +1960,7 @@ public class FileAligner
     }
     p.waitFor();
     
+    auto_aligner_out.close();
 
     for (File file : new File(this.nbalignerfolder).listFiles())
     {

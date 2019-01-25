@@ -532,7 +532,12 @@ $(function () {
 			            $('.show').css('color','black');
 			            $('.show').text('0% Complete');
 			          
-			            $('[data-toggle="popover"]').popover({container: 'body', trigger: 'manual', delay: {show: 0, hide: 0}, html: true, content: (xhr.responseText+" !"+"<br /><br />"+"<a class=\"pafilelink\">Paragraph Alignment File</a>")});
+			            if(xhr.responseText == 'files not aligned on paragraph level'){
+			            	$('[data-toggle="popover"]').popover({container: 'body', trigger: 'manual', delay: {show: 0, hide: 0}, html: true, content: (xhr.responseText+" !"+"<br /><br />"+"<a class=\"pafilelink\">Paragraph Alignment File</a>")});
+			            }else{
+			            	$('[data-toggle="popover"]').popover({container: 'body', trigger: 'manual', delay: {show: 0, hide: 0}, content: (xhr.responseText+" !")});
+			            }
+			            
   					  	$('[data-toggle="popover"]').popover('show');
 	            	  }, 1000);
 	             }
