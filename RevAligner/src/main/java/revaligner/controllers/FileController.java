@@ -292,6 +292,9 @@ public class FileController
       this.projectManager.setAlignProgress(-1, prjid);
       System.out.println("files failed to be aligned");
       e.printStackTrace();
+      String responseMessage = e.getMessage();
+      if(responseMessage == null || responseMessage.length() == 0) responseMessage = "Unknown error";
+      if(responseMessage.length() > 150) responseMessage = responseMessage.substring(0, 150) + "...";
       response.getWriter().write(e.getMessage());
       
       response.setStatus(500);

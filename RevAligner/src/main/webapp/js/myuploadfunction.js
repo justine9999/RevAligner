@@ -533,7 +533,7 @@ $(function () {
 			            $('.show').text('0% Complete');
 			          
 			            if(xhr.responseText == 'files not aligned on paragraph level'){
-			            	$('[data-toggle="popover"]').popover({container: 'body', trigger: 'manual', delay: {show: 0, hide: 0}, html: true, content: (xhr.responseText+" !"+"<br /><br />"+"<a class=\"pafilelink\">Paragraph Alignment File</a>")});
+			            	$('[data-toggle="popover"]').popover({container: 'body', trigger: 'manual', delay: {show: 0, hide: 0}, html: true, content: (xhr.responseText+"<br /><br />"+"<a class=\"pafilelink\">Paragraph Alignment File</a>")});
 			            }else{
 			            	$('[data-toggle="popover"]').popover({container: 'body', trigger: 'manual', delay: {show: 0, hide: 0}, content: (xhr.responseText+" !")});
 			            }
