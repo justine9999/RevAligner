@@ -1976,7 +1976,7 @@ public class FileAligner
       }
     }
     if (alignedtxml.equals("")) {
-      throw new Exception("file didn't aligned by nbaligner");
+      throw new Exception("file wasn't aligned by nbaligner");
     }
     HashMap<String, String[]> alignedtrgs = new HashMap();
     List<String[]> missingtrgs = new ArrayList();
@@ -5090,6 +5090,7 @@ public class FileAligner
     Locale locale = Locale.makeLocale(sourcelanguage);
     Configuration config = new BaseConfiguration();
     config.setProperty("word.acceptTrackChanges", "true");
+    config.setProperty("word.extractHiddenText", "true");
     config.setProperty("word.extractDropDownList", "false");
     config.setProperty("word.extractEquations", "false");
     config.setProperty("word.extractComments", "false");
