@@ -1,10 +1,16 @@
 package revaligner.service;
 
+import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
+import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
+import com.aspose.cells.Style;
+import com.aspose.cells.StyleFlag;
+import com.aspose.cells.TextAlignmentType;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
+import com.aspose.cells.Range;
 import com.aspose.words.Comment;
 import com.aspose.words.CommentRangeEnd;
 import com.aspose.words.CommentRangeStart;
@@ -17,7 +23,6 @@ import com.aspose.words.Footnote;
 import com.aspose.words.NodeCollection;
 import com.aspose.words.NodeType;
 import com.aspose.words.Paragraph;
-import com.aspose.words.Range;
 import com.aspose.words.Revision;
 import com.aspose.words.RevisionCollection;
 import com.aspose.words.Row;
@@ -121,6 +126,7 @@ public class FileAligner
   private String htmlreportfortranslation;
   private String htmlreportfortranslation_temp;
   private String htmlreportforfinalreview;
+  private String excelreport;
   private String prjfolder;
   private String sourcelanguage;
   private String targetlanguage;
@@ -396,6 +402,10 @@ public class FileAligner
   public String getErrorReason()
   {
     return this.errorreason;
+  }
+  
+  public String getExcelReport(){
+	  return this.excelreport;
   }
   
   public void createReformattedDocument(String aligntype)
@@ -4393,9 +4403,258 @@ public class FileAligner
     return notes;
   }
   
+  public void exportExcelLogFile(ArrayList<String[]> reportstats) throws Exception {
+	  
+	  System.out.println("creating excel log file....");
+	  
+	  Workbook workbook = new Workbook();
+	  Worksheet firstTab = workbook.getWorksheets().get(0);
+	  Cells cells = firstTab.getCells();
+	  firstTab.setName("RA Report");
+	  
+	  cells.get(0, 0).setValue("English revision");
+	  cells.get(0, 1).setValue("Original Target");
+	  cells.get(0, 2).setValue("Tracks Type");
+	  cells.get(0, 3).setValue("Category");
+	  cells.get(0, 4).setValue("TPT Feedback");
+	  cells.get(0, 5).setValue("Revised Translation");
+	  cells.get(0, 6).setValue("Accept/Reject?");
+	  cells.get(0, 7).setValue("EY Reviewer comments");	
+	  cells.get(0, 8).setValue("Update TM?");
+		
+	  for (int i = 0; i < reportstats.size(); i++)
+	  {
+	      String[] rstats = (String[])reportstats.get(i);
+	      
+	      String source = rstats[0]
+			    		  	.replaceAll("<([/\\s]*)ins([^>]*?)>", "<$1u>")
+							.replaceAll("<([/\\s]*)del([^>]*?)>", "<$1s>")
+							.replace("<u>", "<font color=\"#00b0f0\"><b><u>")
+							.replace("</u>", "</u></b></font>")
+							.replace("<s>", "<font color=\"#FF0000\"><b><s>")
+							.replace("</s>", "</s></b></font>");
+	      String target = rstats[1];
+	      String tc_type = rstats[4];
+	      
+	      cells.get(i+1, 0).setHtmlString(source);
+	      cells.get(i+1, 1).setHtmlString(target);
+	      cells.get(i+1, 2).setValue(tc_type);
+	  }
+	  
+	  
+	  //header row English revision, Original target
+	  Range range = cells.createRange(0,0,1,2);
+	  range.setColumnWidth(80.0D);
+	  Style style = workbook.createStyle();
+	  style.getFont().setBold(true);
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.CENTER);
+	  style.setVerticalAlignment(TextAlignmentType.CENTER);
+	  style.setPattern(1);
+	  style.setForegroundColor(com.aspose.cells.Color.fromArgb(188, 214, 238));
+	  style.setBorder(BorderType.TOP_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.BOTTOM_BORDER,CellBorderType.THICK,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.LEFT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.RIGHT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  StyleFlag styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  //Tc type
+	  range = cells.createRange(0,2,1,1);
+	  range.setColumnWidth(15.0D);
+	  style = workbook.createStyle();
+	  style.getFont().setBold(true);
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.CENTER);
+	  style.setVerticalAlignment(TextAlignmentType.CENTER);
+	  style.setPattern(1);
+	  style.setForegroundColor(com.aspose.cells.Color.fromArgb(188, 214, 238));
+	  style.setBorder(BorderType.TOP_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.BOTTOM_BORDER,CellBorderType.THICK,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.LEFT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.RIGHT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  //Category + Feedback
+	  range = cells.createRange(0,3,1,2);
+	  range.setColumnWidth(40.0D);
+	  style = workbook.createStyle();
+	  style.getFont().setBold(true);
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.CENTER);
+	  style.setVerticalAlignment(TextAlignmentType.CENTER);
+	  style.setPattern(1);
+	  style.setForegroundColor(com.aspose.cells.Color.fromArgb(188, 214, 238));
+	  style.setBorder(BorderType.TOP_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.BOTTOM_BORDER,CellBorderType.THICK,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.LEFT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.RIGHT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  //Revised Translation
+	  range = cells.createRange(0,5,1,1);
+	  range.setColumnWidth(80.0D);
+	  style = workbook.createStyle();
+	  style.getFont().setBold(true);
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.CENTER);
+	  style.setVerticalAlignment(TextAlignmentType.CENTER);
+	  style.setPattern(1);
+	  style.setForegroundColor(com.aspose.cells.Color.fromArgb(188, 214, 238));
+	  style.setBorder(BorderType.TOP_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.BOTTOM_BORDER,CellBorderType.THICK,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.LEFT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.RIGHT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  //Accept Reject
+	  range = cells.createRange(0,6,1,1);
+	  range.setColumnWidth(15.0D);
+	  style = workbook.createStyle();
+	  style.getFont().setBold(true);
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.CENTER);
+	  style.setVerticalAlignment(TextAlignmentType.CENTER);
+	  style.setPattern(1);
+	  style.setForegroundColor(com.aspose.cells.Color.fromArgb(188, 214, 238));
+	  style.setBorder(BorderType.TOP_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.BOTTOM_BORDER,CellBorderType.THICK,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.LEFT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.RIGHT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  //EY Review Comments
+	  range = cells.createRange(0,7,1,1);
+	  range.setColumnWidth(40.0D);
+	  style = workbook.createStyle();
+	  style.getFont().setBold(true);
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.CENTER);
+	  style.setVerticalAlignment(TextAlignmentType.CENTER);
+	  style.setPattern(1);
+	  style.setForegroundColor(com.aspose.cells.Color.fromArgb(188, 214, 238));
+	  style.setBorder(BorderType.TOP_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.BOTTOM_BORDER,CellBorderType.THICK,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.LEFT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.RIGHT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  //Update TM
+	  range = cells.createRange(0,8,1,1);
+	  range.setColumnWidth(15.0D);
+	  style = workbook.createStyle();
+	  style.getFont().setBold(true);
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.CENTER);
+	  style.setVerticalAlignment(TextAlignmentType.CENTER);
+	  style.setPattern(1);
+	  style.setForegroundColor(com.aspose.cells.Color.fromArgb(188, 214, 238));
+	  style.setBorder(BorderType.TOP_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.BOTTOM_BORDER,CellBorderType.THICK,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.LEFT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  style.setBorder(BorderType.RIGHT_BORDER,CellBorderType.THIN,com.aspose.cells.Color.getBlack());
+	  styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  
+	  //data column English revision, Origianl target
+	  range = cells.createRange(1,0,reportstats.size(),2);
+	  style = workbook.createStyle();
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.LEFT);
+	  style.setVerticalAlignment(TextAlignmentType.TOP);
+	  style.setIndentLevel(1);
+	  styleFlag = new StyleFlag();
+	  styleFlag.setWrapText(true);
+	  styleFlag.setHorizontalAlignment(true);
+	  styleFlag.setVerticalAlignment(true);
+	  styleFlag.setIndent(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  //data column tc type, category
+	  range = cells.createRange(1,2,reportstats.size(),2);
+	  style = workbook.createStyle();
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.CENTER);
+	  style.setVerticalAlignment(TextAlignmentType.CENTER);
+	  styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  //data column tpt feedback
+	  range = cells.createRange(1,4,reportstats.size(),1);
+	  style = workbook.createStyle();
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.LEFT);
+	  style.setVerticalAlignment(TextAlignmentType.CENTER);
+	  style.setIndentLevel(1);
+	  styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  //data column revised translation
+	  range = cells.createRange(1,5,reportstats.size(),1);
+	  style = workbook.createStyle();
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.LEFT);
+	  style.setVerticalAlignment(TextAlignmentType.TOP);
+	  style.setIndentLevel(1);
+	  styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  //data column accept/reject
+	  range = cells.createRange(1,6,reportstats.size(),1);
+	  style = workbook.createStyle();
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.CENTER);
+	  style.setVerticalAlignment(TextAlignmentType.CENTER);
+	  styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  //data column ey reviewer comments
+	  range = cells.createRange(1,7,reportstats.size(),1);
+	  style = workbook.createStyle();
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.LEFT);
+	  style.setVerticalAlignment(TextAlignmentType.CENTER);
+	  style.setIndentLevel(1);
+	  styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  //data column update tm?
+	  range = cells.createRange(1,8,reportstats.size(),1);
+	  style = workbook.createStyle();
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.CENTER);
+	  style.setVerticalAlignment(TextAlignmentType.CENTER);
+	  styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  firstTab.freezePanes(1, 0, 1, 9);
+	  
+	  this.excelreport = (new File(this.prjfolder) + File.separator + new File(this.sourcefile).getName().substring(0, new File(this.sourcefile).getName().lastIndexOf(".")) + "_aligned.xlsx");
+	  workbook.save(this.excelreport);
+  }
+  
   public void exportHtmlLogFileForTranslation(ArrayList<String[]> reportstats, int[] fr_stats)
     throws Exception
-  {
+  { 
     System.out.println("creating log file for translation....");
     StringBuffer sb = new StringBuffer();
     
@@ -6016,6 +6275,7 @@ public class FileAligner
             
             int lb_cnt = 0;
             String surfix = trgtext;
+
             while (surfix.indexOf("<br> ") != -1)
             {
               lb_cnt++;

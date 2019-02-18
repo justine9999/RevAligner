@@ -2550,6 +2550,10 @@
 		downloadFromURL('/RevAligner/rac/gettmreviewed', function(){});
 	});
 	
+	$('.exporteyrevisionreport').on('click', function () {
+		downloadFromURL('/RevAligner/rac/getsocforey', function(){});
+	});
+	
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 	  	//var target = $(e.target).attr("href");
 	  	//alert(target);
@@ -4310,6 +4314,7 @@ a{
     								<li><a class="exportwftmunreview">Not Reviewed<span class="glyphicon pull-right glyphicon-list-alt dl text-warning"></span></a></li>
     							</ul>
     						</li>
+    						<li><a class="exporteyrevisionreport">Download EY Revision Report<span class="glyphicon pull-right glyphicon-stats dl"></span></a></li>
           				</ul>
     				</li>
     				<li description="Tools" class="dropdown">

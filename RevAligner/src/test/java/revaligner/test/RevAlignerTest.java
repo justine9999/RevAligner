@@ -20,6 +20,12 @@ import org.apache.log4j.RollingFileAppender;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import com.aspose.cells.Cells;
+import com.aspose.cells.Range;
+import com.aspose.cells.Style;
+import com.aspose.cells.StyleFlag;
+import com.aspose.cells.TextAlignmentType;
+import com.aspose.cells.Workbook;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -31,17 +37,23 @@ public class RevAlignerTest
 {
   static final Logger logger = Logger.getLogger(RevAlignerTest.class);
   
-  public static void main(String[] args)
+  public static void main(String[] args) throws Exception
   {
-	  int[] A = new int[]{-1,-4,1,3};
-	  final Integer[] sorted = ArrayUtils.toObject(A);
-	  Arrays.sort(sorted, new Comparator<Integer>() {
-		    public int compare(Integer a, Integer b) {
-		        return Math.abs(a)-Math.abs(b);
-		    }
-		});
-	if(true) return;
+	 /* Workbook wb = new Workbook("C:\\Program Files (x86)\\pa\\paprjs\\testprj23\\EN_aligned.xlsx");
+	  Cells cells = wb.getWorksheets().get(0).getCells();
 	  
+	  Range range = cells.createRange(1,0,30,2);
+	  Style style = wb.createStyle();
+	  style.setTextWrapped(true);
+	  style.setHorizontalAlignment(TextAlignmentType.LEFT);
+	  style.setVerticalAlignment(TextAlignmentType.TOP);
+	  StyleFlag styleFlag = new StyleFlag();
+	  styleFlag.setAll(true);
+	  range.applyStyle(style, styleFlag);
+	  
+	  
+	  wb.save("C:\\Program Files (x86)\\pa\\paprjs\\testprj23\\test.xlsx");
+	  if(true) return;*/
     try
     {
       FileAligner fa = new FileAligner();
@@ -64,7 +76,8 @@ public class RevAlignerTest
       {
         fa.createAlignedXML_auto("testprj23", new SessionCollector());
         fa.verifysegments();
-        //fa.exportHtmlLogFileForTranslation(fa.populateSourceTxlf(), fa.getRepsAndFuzzyReps());
+        fa.buildTargetContentMap();
+        fa.exportHtmlLogFileForTranslation(fa.populateSourceTxlf(), fa.getRepsAndFuzzyReps());
       }
       System.out.println("done!");
     }

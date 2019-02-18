@@ -1659,6 +1659,33 @@ public class FileController
     }
   }
   
+  @RequestMapping(value={"/getsocforey"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+  @ResponseBody
+  public void getsocforey(HttpServletResponse response)
+    throws Exception
+  {
+    System.out.println("exporting EY SOC report...");
+    try
+    {
+      Thread.sleep(2000L);
+      this.projectManager.exportEYSOCReport();
+      String eysocreport = this.projectManager.getEYSocReport();
+      
+      response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      response.setHeader("Content-disposition", "attachment; filename=\"" + new File(eysocreport).getName() + "\"");
+      FileCopyUtils.copy(Files.readAllBytes(Paths.get(eysocreport, new String[0])), response.getOutputStream());
+      
+      System.out.println("EY SOC report exported");
+    }
+    catch (Exception e)
+    {
+      System.out.println("EY SOC report failed to be exported");
+      e.printStackTrace();
+      response.sendError(500, e.getMessage());
+      response.setStatus(500);
+    }
+  }
+  
   @RequestMapping(value={"/getparaalignment"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
   @ResponseBody
   public void getparaalignment(HttpServletResponse response)

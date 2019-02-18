@@ -103,6 +103,10 @@ public class ProjectManager
     this.fileAligner.setStopExcution(true);
   }
   
+  public String getEYSocReport(){
+	  return this.fileAligner.getExcelReport();
+  }
+  
   public boolean isSessionTimesOut(HttpSession httpSession)
     throws Exception
   {
@@ -247,6 +251,9 @@ public class ProjectManager
         this.fileAligner.setAutoSavedAlignedFile(auto_saved_alignedxml);
       }
     }
+    
+    this.fileAligner.buildTargetContentMap();
+    
     if (isprjoutfortrans.equals("true"))
     {
       String populatedsourcetxlf = sourcefile + ".txlf";
@@ -340,6 +347,10 @@ public class ProjectManager
     this.fileAligner.createTargetFile();
     this.fileAligner.exportHtmlLogFileForFinalReview();
     this.fileAligner.createTargetCompareFile(preservefmt);
+  }
+  
+  public void exportEYSOCReport() throws Exception{
+	  this.fileAligner.exportExcelLogFile(this.fileAligner.populateSourceTxlf());
   }
   
   public void readAlignedParagraphs()
@@ -497,7 +508,6 @@ public class ProjectManager
   public void createTranslationKit()
     throws Exception
   {
-    this.fileAligner.buildTargetContentMap();
     this.fileAligner.exportHtmlLogFileForTranslation(this.fileAligner.populateSourceTxlf(), this.fileAligner.getRepsAndFuzzyReps());
   }
   
