@@ -295,7 +295,7 @@ public class FileController
       String responseMessage = e.getMessage();
       if(responseMessage == null || responseMessage.length() == 0) responseMessage = "Unknown error";
       if(responseMessage.length() > 150) responseMessage = responseMessage.substring(0, 150) + "...";
-      response.getWriter().write(e.getMessage());
+      response.getWriter().write(responseMessage);
       
       response.setStatus(500);
     }

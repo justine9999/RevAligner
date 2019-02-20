@@ -37,6 +37,7 @@ public class ProjectManager
 {
   private String aligntype = "";
   private FileAligner fileAligner = new FileAligner();
+  private boolean isTargetMapBuilt = false;
   
   @Inject
   SessionCollector sessionCollector;
@@ -251,9 +252,7 @@ public class ProjectManager
         this.fileAligner.setAutoSavedAlignedFile(auto_saved_alignedxml);
       }
     }
-    
-    this.fileAligner.buildTargetContentMap();
-    
+     
     if (isprjoutfortrans.equals("true"))
     {
       String populatedsourcetxlf = sourcefile + ".txlf";
@@ -350,7 +349,11 @@ public class ProjectManager
   }
   
   public void exportEYSOCReport() throws Exception{
-	  this.fileAligner.exportExcelLogFile(this.fileAligner.populateSourceTxlf());
+	if(!isTargetMapBuilt){
+		this.fileAligner.buildTargetContentMap();
+		isTargetMapBuilt = true;
+	}
+	this.fileAligner.exportExcelLogFile(this.fileAligner.populateSourceTxlf());
   }
   
   public void readAlignedParagraphs()
@@ -508,6 +511,11 @@ public class ProjectManager
   public void createTranslationKit()
     throws Exception
   {
+	  if(!isTargetMapBuilt){
+		  this.fileAligner.buildTargetContentMap();
+		  isTargetMapBuilt = true;
+	  }
+	
     this.fileAligner.exportHtmlLogFileForTranslation(this.fileAligner.populateSourceTxlf(), this.fileAligner.getRepsAndFuzzyReps());
   }
   

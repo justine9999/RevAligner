@@ -2551,7 +2551,60 @@
 	});
 	
 	$('.exporteyrevisionreport').on('click', function () {
-		downloadFromURL('/RevAligner/rac/getsocforey', function(){});
+		issavingfile = true;
+		$("#loading").modal({backdrop: "static",keyboard: false});
+		$('#loading').modal('show');
+		
+		var arr1 = [];
+		var arr2 = [];
+		for (i = 0; i < targets.length; i++) { 
+    		var seq = getSeq(targets[i]);
+    		var text = getHtmlText(targets[i]);
+    		arr1[i] = text;
+    		arr2[i] = seq;
+		}
+		
+		var arr3 = [];
+		var arr4 = [];
+		for (i = 0; i < removed_targets.length; i++) { 
+			var seq = getSeq(removed_targets[i]);
+			var text  = getHtmlText(removed_targets[i]);
+			arr3[i] = text;
+    		arr4[i] = seq;
+		}
+		
+		var obj = {'arr1':arr1,'arr2':arr2,'arr3':arr3,'arr4':arr4,'arr5':locked_targets,'nullcnt':empty_next_index,'arr6':edited_targets,'arr7':review_targets,'arr8':ignore_sources};
+		
+    	$.ajax({
+            url: '/RevAligner/rac/save_seg',
+            type: "POST",
+            dataType: 'json',
+            data: encodeURIComponent(JSON.stringify(obj)),
+                 
+              beforeSend: function(xhr) {
+                xhr.setRequestHeader("Accept", "application/json");
+                xhr.setRequestHeader("Content-Type", "application/json");
+              },
+                 
+              success: function() {
+              	  $('#loading').modal('hide');
+              	  $('.message-text').removeClass('message-bad');
+              	  $('.message-text').addClass('message-good');
+              	  $('.message-text').html('<h4><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Project saved & exporting EY revision report...</h4>');
+              	  $('#message').modal('show');
+              	  downloadFromURL('/RevAligner/rac/getsocforey', function(){});
+              	  issavingfile = false;
+              },
+              
+              error: function() {
+              	  $('#loading').modal('hide');
+              	  $('.message-text').removeClass('message-good');
+              	  $('.message-text').addClass('message-bad');
+            	  $('.message-text').html('<h4><span class="glyphicon glyphicon-exclamation-sign"></span>&nbsp;&nbsp;Project failed to save...</h4>');
+              	  $('#message').modal('show');
+              	  issavingfile = false;
+              }
+        });
 	});
 	
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -4271,7 +4324,7 @@
 }
 
 .dropdown-menu {
-    width: 260px !important;
+    width: 280px !important;
     background-color: #bbb;
     font-size: 15px;
 }
