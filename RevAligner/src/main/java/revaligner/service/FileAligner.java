@@ -6196,6 +6196,7 @@ public class FileAligner
                 statss.add(stats);
               }
             }
+
             for (int t = 0; t < transunits.size(); t++)
             {
               org.dom4j.Element trans_unit = (org.dom4j.Element)transunits.get(t);

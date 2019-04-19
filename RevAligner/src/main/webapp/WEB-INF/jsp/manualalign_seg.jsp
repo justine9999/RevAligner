@@ -25,6 +25,7 @@
 <script src="../js/heartcode-canvasloader-min.js"></script>
 <script src="../js/progressbar.js"></script>
 <script src="//cdn.jsdelivr.net/jquery.shadow-animation/1/mainfile"></script>
+	
 <script type="text/javascript">
     $(function(){      
       var prjid;
@@ -47,6 +48,8 @@
 	  var unit_color_code = "#F5F3EE";
 	  var prev_unit_color_code = unit_color_code;
 	  var lockedtargetsnum = 0;
+	  
+	  var perm_removed_target_seg_info = {segid : '', segtext : '', index : ''};
 	  
 	  var maxSegPerPage = 50;
 	  var maxSubSegPerPage = 20;
@@ -1445,9 +1448,33 @@
   			updateProgress();
 		});
 
-		$('body').on('click', '.permovegrid', function() {
+    	$('body').on('click', '#undobutton', function() {
+    		if(perm_removed_target_seg_info.segid == ''){
+    			return;
+    		}
+    		var target = perm_removed_target_seg_info.segid + "#" + perm_removed_target_seg_info.segtext;
+    		removed_targets.splice(perm_removed_target_seg_info.index, 0, target)
+    		var trash = $('.nav').find('.fa-braille')[0];
+    		if($(trash).hasClass("lightup")) {
+    			var comboclone = $combo_rmv.clone(true);
+				comboclone.find('.segid').text(perm_removed_target_seg_info.segid);
+				comboclone.find('drag').html(perm_removed_target_seg_info.segtext);
+				gridster_rmv_trg.add_widget(comboclone,1,1,1,perm_removed_target_seg_info.index+1);
+    		}
+    		perm_removed_target_seg_info = {segid : '', segtext : '', index : ''};
+    		hideUndoBar();
+    	});
+    	
+		$('body').on('click', '.permovegrid', function() {	
   			var rmvtrgseg = $(this).closest('.rmv_trg_segment');
   			var index = parseInt(rmvtrgseg.attr("data-row"))-1;
+  			
+  			var text = getHtmlText(removed_targets[index]);
+  			var seq = getSeq(removed_targets[index]);
+  			perm_removed_target_seg_info.segid = seq;
+			perm_removed_target_seg_info.segtext = text;
+			perm_removed_target_seg_info.index = index;
+  			
 			removed_targets.splice(index,1);
 			$(this).tooltip('destroy');
   			gridster_rmv_trg.remove_widget(rmvtrgseg);
@@ -1459,6 +1486,11 @@
   			}
   			
   			updateProgress();
+  			
+  			setTimeout(function(){ 
+				showUndoBar();
+			}, 300);
+  			
 		});
 		
 		$('.nav').find('.el').on('mouseenter', function(event) {
@@ -4311,7 +4343,21 @@
 				html : 'true'
 			});
 		}
+		
+		function showUndoBar() {
+			var bar = document.getElementById("undobar");
+			bar.className = "show";
+			setTimeout(function(){ 
+				bar.className = bar.className.replace("show", ""); 
+			}, 6000);
+		}
+		
+		function hideUndoBar() {
+			var bar = document.getElementById("undobar");
+			bar.className = bar.className.replace("show", ""); 
+		}
     });
+
 </script>
 <style>
 .gridster .player {
@@ -4461,11 +4507,14 @@ a{
 				</h4>
 				<br>
 				<div class="rmvtrgcolouter">
-					<div id="rmvtrgcol" class="rmvborder">
-					</div>
+					<div id="rmvtrgcol" class="rmvborder"></div>
 				</div>
 			</div>
   		</div>
+	</div>
+	<div id="undobar">
+		<span>Unaligned target segment removed.</span>
+		<button id="undobutton" class="btn btn-link btn-xs">UNDO</button>
 	</div>
 	<button id="prev_page" class="btn btn-default btn-sm" type="button" style="display:none">
 		<i class="el el-play el-rotate-180"></i>
@@ -5272,6 +5321,59 @@ body
 
 .quicksavefile {
 	margin-right: 10px;
+}
+
+#undobutton {
+	margin-left: 20px;
+	background-color: #333;
+	color: #29c7e0a3 !important;
+}
+
+#undobar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #333; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 100000; /* Add a z-index if needed */
+  left: 81%; /* Center the snackbar */
+  bottom: 13px; /* 30px from the bottom */
+  font-family: Verdana,sans-serif;
+  box-shadow: 0 0 6px #ffffff;
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#undobar.show {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar. 
+  However, delay the fade out process for 2.5 seconds */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 5.5s;
+  animation: fadein 0.5s, fadeout 0.5s 5.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;} 
+to {bottom: 13px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 13px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 13px; opacity: 1;} 
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 13px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
 }
 
 </style>

@@ -727,6 +727,8 @@ $(function () {
               	  $('#converttargetbad').hide();
               	  $('#converttargetgood').show();
             	  $('#convbtntext').html('Files Converted');
+            	  $('.notpreservefmt').css('pointer-events', 'none');
+				  $('.notpreservefmt').css('opacity', '0.6');
             	  $('.preservefmt').css('pointer-events', 'none');
 				  $('.preservefmt').css('opacity', '0.6');
             	  $('#downloadTarget').prop('disabled', false);
@@ -839,13 +841,38 @@ $(function () {
 	});
 	
 	$('.preservefmt').click(function() {
+		var nockb = $('.notpreservefmt');
 		var ckb = $(this);
 		if(ckb.hasClass('el-check-empty')){
 			ckb.removeClass('el-check-empty')
 			ckb.addClass('el-check')
+				
+			nockb.removeClass('el-check')
+			nockb.addClass('el-check-empty')
 		}else{
 			ckb.removeClass('el-check')
 			ckb.addClass('el-check-empty')
+				
+			nockb.removeClass('el-check-empty')
+			nockb.addClass('el-check')
+		}
+	});
+	
+	$('.notpreservefmt').click(function() {
+		var nockb = $('.preservefmt');
+		var ckb = $(this);
+		if(ckb.hasClass('el-check-empty')){
+			ckb.removeClass('el-check-empty')
+			ckb.addClass('el-check')
+				
+			nockb.removeClass('el-check')
+			nockb.addClass('el-check-empty')
+		}else{
+			ckb.removeClass('el-check')
+			ckb.addClass('el-check-empty')
+				
+			nockb.removeClass('el-check-empty')
+			nockb.addClass('el-check')
 		}
 	});
 	

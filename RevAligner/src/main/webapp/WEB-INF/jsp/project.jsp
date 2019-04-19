@@ -404,6 +404,11 @@ a{
 
 .preservefmt:hover{
 	color:#000000;
+	margin-left: 20px;
+}
+
+.notpreservefmt:hover{
+	color:#000000;
 }
 
 .table{
@@ -859,7 +864,8 @@ td{
 						</button>
 						<input id="fileuploadtrans" class="fuploadtrans" type="file" name="files[]" data-url="upload/merge" multiple style='display: none;'>
 						<div id="aligntrgoption">
-							<i class="el el-check-empty preservefmt">&nbsp;&nbsp;Preserve old target formatting</i>
+							<i class="el el-check notpreservefmt">&nbsp;&nbsp;Match Source formatting</i>
+							<i class="el el-check-empty preservefmt">&nbsp;&nbsp;Match old target formatting</i>
 						</div>
 						<div class="progress">
     						<div id = "progress_all_trans" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">

@@ -34,6 +34,16 @@ import com.google.gson.GsonBuilder;
 import revaligner.service.FileAligner;
 import revaligner.service.SessionCollector;
 
+class Employee {
+	
+	  public void printName(String name) {
+		  String sname = name;
+		  System.out.println("printing name: " + sname);
+	  }
+}
+
+
+
 public class RevAlignerTest
   implements Serializable
 {
@@ -41,8 +51,16 @@ public class RevAlignerTest
   
   public static void main(String[] args) throws Exception
   {
-	  String s1 = "this is one hundred and thirty";
-	  System.out.println(normalizeEnglishToNumber(s1));
+	  Employee em = new Employee();
+	  Thread thread1 = new Thread(() -> {
+		  em.printName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+	  });
+	  Thread thread2 = new Thread(() -> {
+		  em.printName("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+	  });
+	  thread1.start();
+	  thread2.start();
+	  
 	  if(true) return;
     try
     {
