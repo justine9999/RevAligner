@@ -37,7 +37,6 @@ public class ProjectManager
 {
   private String aligntype = "";
   private FileAligner fileAligner = new FileAligner();
-  private boolean isTargetMapBuilt = false;
   
   @Inject
   SessionCollector sessionCollector;
@@ -349,10 +348,7 @@ public class ProjectManager
   }
   
   public void exportEYSOCReport() throws Exception{
-	if(!isTargetMapBuilt){
-		this.fileAligner.buildTargetContentMap();
-		isTargetMapBuilt = true;
-	}
+	this.fileAligner.buildTargetContentMap();
 	this.fileAligner.exportExcelLogFile(this.fileAligner.populateSourceTxlf());
   }
   
@@ -511,11 +507,7 @@ public class ProjectManager
   public void createTranslationKit()
     throws Exception
   {
-	  if(!isTargetMapBuilt){
-		  this.fileAligner.buildTargetContentMap();
-		  isTargetMapBuilt = true;
-	  }
-	
+	this.fileAligner.buildTargetContentMap();
     this.fileAligner.exportHtmlLogFileForTranslation(this.fileAligner.populateSourceTxlf(), this.fileAligner.getRepsAndFuzzyReps());
   }
   
